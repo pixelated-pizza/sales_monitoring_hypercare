@@ -13,10 +13,12 @@ class OrderController extends Controller
 
     public function fetchAndGroupSales() {
     $client = new Client();
-    $lastWeekSameDay = Carbon::today()->subWeek(); 
+    $lastWeekSameDay = Carbon::today('Australia/Sydney')->subWeek(); 
 
     $dateFrom = $lastWeekSameDay->copy()->format('Y-m-d') . ' 00:00:00';
     $dateTo   = $lastWeekSameDay->copy()->format('Y-m-d') . ' 23:59:59';
+
+    // dd($dateTo);
 
     $response = $client->request('POST', env('NETO_API_URL'), [
         'headers' => [
@@ -76,7 +78,7 @@ class OrderController extends Controller
 public function fetchAndGroupTodaySales()
 {
     $client = new Client();
-    $today = Carbon::today()->format('Y-m-d'); 
+    $today = Carbon::today('Australia/Sydney')->format('Y-m-d'); 
 
     $response = $client->request('POST', env('NETO_API_URL'), [
         'headers' => [
