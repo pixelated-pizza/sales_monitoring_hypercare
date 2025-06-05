@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function () {
             ];
 
             let html = `
-                 <h1 class="text-center text-black"> Orders from ${last_week}
+                 <h1 class="text-center text-black"> Sales from ${last_week}
                 <table class="min-w-full border border-gray-300 text-sm text-left text-gray-700">
                     <thead class="bg-gray-100">
                         <tr>

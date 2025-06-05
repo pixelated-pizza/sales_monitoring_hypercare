@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const today = getToday();
 
                 let html = `
-                     <h1 class="text-center text-black"> Orders as of Today (${today})</h1>
+                     <h1 class="text-center text-black"> Sales as of Today (${today})</h1>
                     <table class="min-w-full border border-gray-300 text-sm text-left text-gray-700">
                         <thead class="bg-gray-100">
                             <tr>
