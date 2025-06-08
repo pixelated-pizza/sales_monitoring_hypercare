@@ -5,3 +5,7 @@ section {
 body {
    
 }
+
+ table td, table th, table tr {
+    border: 1px solid #000; 
+  }

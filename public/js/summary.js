@@ -44,11 +44,20 @@ function render() {
             return currentHour < endHour24;
         };
 
-        let html = `<table class="min-w-full border border-gray-300 text-sm text-left text-gray-700">
-      <thead class="bg-gray-100">
-        <tr><th class="border px-2 py-1">Sales Channel</th>`;
+        const allTimeRangesCompleted = () => {
+            return timeRanges.every(range => !isFutureRange(range));
+        };
+
+        let html = `
+            <div class="overflow-auto max-w-full">
+            <table class="min-w-full text-sm text-left text-gray-700 shadow-lg">
+            <thead class="bg-blue-50 sticky top-0 z-10">
+            <tr>
+            <th class="px-2 py-1 bg-blue-100">Sales Channel</th>`;
         timeRanges.forEach(range => {
-            html += `<th class="border px-2 py-1 bg-cyan-100">${range}</th><th class="border px-2 py-1">% Diff</th>`;
+            html += `
+                <th class="px-2 py-1 bg-cyan-100 text-xs" style="background-color: #00FFFF;">${range}</th>
+                    <th class="border px-2 py-1 bg-cyan-50 text-xs">% Diff</th>`;
         });
         html += `<th class="border px-2 py-1">TOTAL</th><th class="border px-2 py-1">Total Sales Status</th></tr>
       </thead><tbody>`;
@@ -61,7 +70,8 @@ function render() {
         let comboAlert = false;
 
         comboChannels.forEach(channel => {
-            let row = `<tr class="even:bg-gray-50"><td class="border px-2 py-1 font-semibold">${channel}</td>`;
+            let row = `<tr class="even:bg-gray-50" style="border: 2px solid black;"><td class="border px-2 py-1 font-semibold">${channel}</td>`;
+
             timeRanges.forEach(range => {
                 const future = isFutureRange(range);
                 const today = todayData[channel]?.[range] || 0;
@@ -83,7 +93,8 @@ function render() {
             html += row;
         });
 
-        html += `<tr class="bg-gray-200"><td class="border px-2 py-1 font-bold">TOTAL (Edisons + Mytopia)</td>`;
+        html += `<tr class="bg-gray-200" style="border: 2px solid black;"><td class="px-2 py-1 font-bold">TOTAL (Edisons + Mytopia)</td>`;
+
         timeRanges.forEach(range => {
             const today = comboToday[range] || 0;
             const prev = comboPrev[range] || 0;
@@ -97,10 +108,11 @@ function render() {
             html += `<td class="border px-2 py-1 text-left ${future ? 'text-gray-400' : colorClass}">${future ? '—' : diff}</td>`;
         });
 
-        const comboStatus = comboAlert ? '🚩' : (comboTodayTotal < comboPrevTotal * 0.3 ? '🚩 below 30%' : 'within 30% of the benchmark');
+        const comboStatus = (comboPrevTotal > 0 && comboTodayTotal < comboPrevTotal * 0.3) ? '🚩 below 30%' : 'within 30% of the benchmark';
         html += `<td class="border px-2 py-1 font-bold">${comboTodayTotal}</td><td class="border px-2 py-1">${comboStatus}</td></tr>`;
 
-        html += `<tr><td class="border px-2 py-1 text-gray-500 italic">Benchmark</td>`;
+        html += `<tr class="border-t-2"><td class="border px-2 py-1 text-gray-500 italic">Benchmark</td>`;
+
         timeRanges.forEach(range => {
             const isFuture = isFutureRange(range);
             html += `<td class="border px-2 py-1 text-left" colspan="2">${isFuture ? '—' : comboPrev[range]}</td>`;
@@ -108,18 +120,29 @@ function render() {
         html += `<td class="border px-2 py-1 text-left" colspan="2">${comboPrevTotal}</td></tr>`;
 
         html += `<tr><td class="border px-2 py-1 text-gray-500 italic">Alert below 50% of Benchmark</td>`;
-        timeRanges.forEach(() => {
-            html += `<td class="border px-2 py-1 text-center" colspan="2">—</td>`;
+        if (allTimeRangesCompleted()) {
+            timeRanges.forEach(range => {
+            const today = todayData[channel]?.[range] || 0;
+            const prev = prevData[channel]?.[range] || 0;
+            const isRedFlag = prev > 0 && today < prev * 0.5;
+            html += `<td class="border px-2 py-1 text-center font-bold text-red-700" colspan="2">${isRedFlag ? '🚩' : '—'}</td>`;
         });
-        html += `<td class="border px-2 py-1 text-left" colspan="2">${comboStatus}</td></tr>`;
+        } else {
+            timeRanges.forEach(() => {
+                html += `<td class="border px-2 py-1 text-center" colspan="2">—</td>`;
+            });
+        }
+        html += `<td class="border px-2 py-1 text-center bg-gray-100" colspan="2">—</td>`;
+
+
 
         html += `<tr><td class="border px-2 py-1 text-gray-500 italic">50% of Benchmark</td>`;
         timeRanges.forEach(range => {
             const isFuture = isFutureRange(range);
             const val = comboPrev[range] || 0;
-            html += `<td class="border px-2 py-1 text-left" colspan="2">${isFuture ? '—' : (val / 2).toFixed(0)}</td>`;
+            html += `<td class="border px-2 py-1 text-left" colspan="2">${isFuture ? '—' : (val / 2).toFixed(1)}</td>`;
         });
-        html += `<td class="border px-2 py-1 text-left" colspan="2">${(comboPrevTotal / 2).toFixed(0)}</td></tr>`;
+        html += `<td class="border px-2 py-1 text-left" colspan="2">${(comboPrevTotal / 2).toFixed(1)}</td></tr>`;
 
         preferredOrder.forEach(channel => {
             if (comboChannels.includes(channel)) return;
@@ -129,7 +152,8 @@ function render() {
             let totalPrev = 0;
             let alert = false;
 
-            let row = `<tr class="even:bg-gray-50"><td class="border px-2 py-1 font-semibold">${channel}</td>`;
+            let row = `<tr class="even:bg-gray-50" style="border: 2px solid black;"><td class="border px-2 py-1 font-semibold">${channel}</td>`;
+
             timeRanges.forEach(range => {
                 const future = isFutureRange(range);
                 const today = todayData[channel]?.[range] || 0;
@@ -152,7 +176,7 @@ function render() {
                 totalPrev += prev;
             });
 
-            const status = alert ? '🚩' : (totalToday < totalPrev * 0.3 ? '🚩 below 30%' : 'within 30% of the benchmark');
+            const status = (totalPrev > 0 && totalToday < totalPrev * 0.3) ? '🚩 below 30%' : 'within 30% of the benchmark';
             row += `<td class="border px-2 py-1 font-bold">${totalToday}</td><td class="border px-2 py-1">${status}</td></tr>`;
             html += row;
 
@@ -164,19 +188,29 @@ function render() {
             });
             html += `<td class="border px-2 py-1 text-left" colspan="2">${totalPrev}</td></tr>`;
 
-            html += `<tr><td class="border px-2 py-1 text-gray-500 italic">Alert below 50% of Benchmark</td>`;
-            timeRanges.forEach(() => {
-                html += `<td class="border px-2 py-1 text-center" colspan="2">—</td>`;
-            });
-            html += `<td class="border px-2 py-1" colspan="2"></td></tr>`;
+           html += `<tr><td class="border px-2 py-1 text-gray-500 italic">Alert below 50% of Benchmark</td>`;
+           if (allTimeRangesCompleted()) {
+                timeRanges.forEach(range => {
+                    const today = todayData[channel]?.[range] || 0;
+                    const prev = prevData[channel]?.[range] || 0;
+                    const isRedFlag = prev > 0 && today < prev * 0.5;
+                    html += `<td class="border px-2 py-1 text-center font-bold text-red-700" colspan="2">${isRedFlag ? '🚩' : '—'}</td>`;
+                });
+            } else {
+                timeRanges.forEach(() => {
+                    html += `<td class="border px-2 py-1 text-center" colspan="2">—</td>`;
+                });
+            }
+            html += `<td class="border px-2 py-1 text-center bg-gray-100" colspan="2">—</td>`;
+
 
             html += `<tr><td class="border px-2 py-1 text-gray-500 italic">50% of Benchmark</td>`;
             timeRanges.forEach(range => {
                 const val = (prevData[channel]?.[range] || 0) / 2;
                 const isFuture = isFutureRange(range);
-                html += `<td class="border px-2 py-1 text-left" colspan="2">${isFuture ? '—' : val.toFixed(0)}</td>`;
+                html += `<td class="border px-2 py-1 text-left" colspan="2">${isFuture ? '—' : val.toFixed(1)}</td>`;
             });
-            html += `<td class="border px-2 py-1 text-left" colspan="2">${(totalPrev / 2).toFixed(0)}</td></tr>`;
+            html += `<td class="border px-2 py-1 text-left" colspan="2">${(totalPrev / 2).toFixed(1)}</td></tr>`;
         });
 
         html += `</tbody></table>`;

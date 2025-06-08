@@ -8,7 +8,7 @@
 
     <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-200 mb-8">
         <h2 class="text-xl font-semibold text-gray-800 mb-4">Summary Report</h2>
-        <div id="summary-report" class="overflow-auto"></div>
+        <div id="summary-report" class="max-h-[80vh] overflow-auto p-4 bg-white rounded shadow-md border border-gray-200"></div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">

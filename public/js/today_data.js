@@ -75,14 +75,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 const preferredOrder = ["Edisons", "Mytopia", "eBay", "BigW", "Mydeals", "Kogan", "Bunnings"];
 
                 preferredOrder.forEach(channel => {
-                    if (data[channel]) {
-                        html += `<tr class="even:bg-gray-50">`;
-                        html += `<td class="border border-gray-300 px-4 py-2 font-semibold">${channel}</td>`;
-                        timeRanges.forEach(range => {
-                            html += `<td class="border border-gray-300 px-4 py-2 text-right">${data[channel][range.label] || 0}</td>`;
-                        });
-                        html += `</tr>`;
-                    }
+                    html += `<tr class="even:bg-gray-50">`;
+                    html += `<td class="border border-gray-300 px-4 py-2 font-semibold">${channel}</td>`;
+                    timeRanges.forEach(range => {
+                        const value = data[channel]?.[range.label];
+                        html += `<td class="border border-gray-300 px-4 py-2 text-right">${value != null ? value : '—'}</td>`;
+                    });
+                    html += `</tr>`;
                 });
 
                 html += `</tbody></table>`;
