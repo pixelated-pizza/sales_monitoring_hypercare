@@ -39,8 +39,15 @@
             </div>
 
             <nav class="flex flex-col space-y-2">
-                <a href="{{ route('sales') }}" class="hover:text-white sidebar-text">Hourly Sales Monitoring</a>
-                <a href="{{ route('hypercare') }}" class="hover:text-white sidebar-text">Hypercare</a>
+                <a href="{{ route('sales') }}"
+                    class="sidebar-text hover:text-yellow-400 
+                    {{ request()->routeIs('sales') 
+                    ? 'text-black font-bold dark:text-yellow-300' : 'text-yellow-700 dark:text-yellow-400' }}">
+                    Hourly Sales Monitoring
+                </a>
+                <a href="{{ route('hypercare') }}" class="sidebar-text hover:text-yellow-400 {{ request()->routeIs('hypercare') ? 'text-black font-bold dark:text-yellow-300' : 'text-yellow-500 dark:text-yellow-400' }}">
+                    Hypercare
+                </a>
             </nav>
 
             <div class="flex items-center gap-2 mt-auto">
