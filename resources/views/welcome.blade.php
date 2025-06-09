@@ -43,9 +43,16 @@
                 <a href="{{ route('hypercare') }}" class="hover:text-white sidebar-text">Hypercare</a>
             </nav>
 
-            <button id="darkModeToggle" class="mt-auto px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 dark:hover:bg-gray-600 sidebar-text">
-                Toggle Dark Mode
-            </button>
+            <div class="flex items-center gap-2 mt-auto">
+                <button id="darkModeToggle"
+                    class="relative w-14 h-8 bg-gray-300 dark:bg-gray-600 rounded-full p-1 focus:outline-none transition-colors duration-300">
+    
+                    <span id="toggleThumb"
+                        class="toggle-thumb absolute top-1 left-1 w-6 h-6 rounded-full shadow-md flex items-center justify-center text-yellow-400 dark:text-gray-300 bg-white dark:bg-gray-800 transition-transform">
+                        🌞
+                    </span>
+                </button>
+            </div>
         </aside>
 
         <main class="flex-1 p-6 overflow-y-auto">
