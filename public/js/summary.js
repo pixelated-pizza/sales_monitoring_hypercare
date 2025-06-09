@@ -1,8 +1,14 @@
-function render() {
+function renderSummary() {
+    const loadingElem = document.getElementById('loading');
+     const container = document.getElementById('summary-report');
+
+    loadingElem.style.display = 'block';  
+    container.innerHTML = ''; 
     Promise.all([
         axios.get('/api/today-sales'),
         axios.get('/api/prev-sales')
     ]).then(([todayRes, prevRes]) => {
+        loadingElem.style.display = 'none';
         const todayData = todayRes.data;
         const prevData = prevRes.data;
 
@@ -17,6 +23,20 @@ function render() {
 
         const preferredOrder = ["Edisons", "Mytopia", "eBay", "BigW", "Mydeals", "Kogan", "Bunnings"];
         const container = document.getElementById('summary-report');
+        
+
+        const now = new Date();
+        const lastWeekOfToday = new Date(now);
+        lastWeekOfToday.setDate(lastWeekOfToday.getDate() - 7);
+
+        const formatDate = (d) => {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return d.toLocaleDateString(undefined, options);
+        };
+
+        var html = `<div class="mb-2 font-semibold text-gray-700">Sales Data: ${formatDate(now)} versus ${formatDate(lastWeekOfToday)}(Benchmark)</div>`;
+
+        html += `<div class="mb-2 font-semibold text-gray-700"><i><b>Note: </b> Benchmark values refers to the data of the same weekday from the previous week (${formatDate(lastWeekOfToday)})</i></div>`;
 
         const getPercentDiff = (sales, benchmark) => {
             if (benchmark === 0) {
@@ -48,7 +68,7 @@ function render() {
             return timeRanges.every(range => !isFutureRange(range));
         };
 
-        let html = `
+        html += `
             <div class="overflow-auto max-w-full">
             <table class="min-w-full text-sm text-left text-gray-700 shadow-lg">
             <thead class="bg-blue-50 sticky top-0 z-10">
@@ -67,7 +87,6 @@ function render() {
         let comboPrevTotal = 0;
         const comboToday = {};
         const comboPrev = {};
-        let comboAlert = false;
 
         comboChannels.forEach(channel => {
             let row = `<tr class="even:bg-gray-50" style="border: 2px solid black;"><td class="border px-2 py-1 font-semibold">${channel}</td>`;
@@ -216,11 +235,13 @@ function render() {
         html += `</tbody></table>`;
         container.innerHTML = html;
     }).catch(err => {
+        loadingElem.style.display = 'none';  
+        container.innerHTML = `<div class="text-red-600">Failed to load summary report.</div>`;
         console.error('Failed to load summary report:', err);
     });
 }
 
-const getRefreshInterval = () => {
+const getRefreshIntervalSummary = () => {
     const now = new Date();
     const hour = now.getHours();
 
@@ -232,9 +253,9 @@ const getRefreshInterval = () => {
     return 10 * 60 * 1000;                     
 };
 
-function schedRef(){
-    render();
-    setTimeout(schedRef, getRefreshInterval());
+function schedRefSummary(){
+    renderSummary();
+    setTimeout(schedRefSummary, getRefreshIntervalSummary());
 }
 
-document.addEventListener('DOMContentLoaded', schedRef);
+document.addEventListener('DOMContentLoaded', schedRefSummary);

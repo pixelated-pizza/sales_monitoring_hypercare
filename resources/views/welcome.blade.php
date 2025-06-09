@@ -22,11 +22,39 @@
             </style>
         @endif
     </head>
-    <body>
-        @yield('content')
+    <body class="h-full bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors">
+        
+        
+         <div class="flex h-screen">
+         <aside id="sidebar" class="sidebar w-64 bg-gray-100 dark:bg-gray-800 p-4 flex flex-col">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-xl font-semibold sidebar-text">Dashboard</h2>
+                    <button id="collapseBtn" aria-label="Toggle sidebar" class="p-1 rounded hover:bg-gray-300 dark:hover:bg-gray-700">
+                        <svg class="w-6 h-6 sidebar-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="3" y1="12" x2="21" y2="12" />
+                            <line x1="3" y1="6" x2="21" y2="6" />
+                            <line x1="3" y1="18" x2="21" y2="18" />
+                        </svg>
+                    </button>
+            </div>
 
-        <script src="{{ asset('js/prev_data.js') }}"></script>
-        <script src="{{ asset('js/today_data.js') }}"></script>
-        <script src="{{ asset('js/summary.js') }}"></script>
+            <nav class="flex flex-col space-y-2">
+                <a href="{{ route('sales') }}" class="hover:text-white sidebar-text">Hourly Sales Monitoring</a>
+                <a href="{{ route('hypercare') }}" class="hover:text-white sidebar-text">Hypercare</a>
+            </nav>
+
+            <button id="darkModeToggle" class="mt-auto px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 dark:hover:bg-gray-600 sidebar-text">
+                Toggle Dark Mode
+            </button>
+        </aside>
+
+        <main class="flex-1 p-6 overflow-y-auto">
+            @yield('content')
+        </main>
+    </div>
+    <script src="{{ asset('js/summary.js') }}"></script>
+    <script src="{{ asset('js/last_two_weeks.js') }}"></script>
+    <script src="{{ asset('js/app.js') }}"></script>
+        
     </body>
 </html>
