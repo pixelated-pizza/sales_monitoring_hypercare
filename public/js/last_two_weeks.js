@@ -111,10 +111,15 @@ function renderPast(selectedDate = null) {
         html += `<td class="border px-2 py-1 text-left" colspan="2">${comboPrevTotal}</td></tr>`;
 
         html += `<tr><td class="border px-2 py-1 text-gray-500 italic">Alert below 50% of Benchmark</td>`;
-        timeRanges.forEach(() => {
-            html += `<td class="border px-2 py-1 text-center" colspan="2">—</td>`;
+        timeRanges.forEach(range => {
+            const today = comboToday[range] || 0;
+            const benchmark = comboPrev[range] || 0;
+            const isBelow50 = benchmark > 0 && today < benchmark * 0.5;
+            const symbol = benchmark === 0 ? '—' : (isBelow50 ? '🚩' : '✅');
+            html += `<td class="border px-2 py-1 text-center font-bold" colspan="2">${symbol}</td>`;
         });
         html += `<td class="border px-2 py-1 text-left" colspan="2">${comboStatus}</td></tr>`;
+
 
         html += `<tr><td class="border px-2 py-1 text-gray-500 italic">50% of Benchmark</td>`;
         timeRanges.forEach(range => {
@@ -161,10 +166,15 @@ function renderPast(selectedDate = null) {
             html += `<td class="border px-2 py-1 text-left" colspan="2">${totalPrev}</td></tr>`;
 
             html += `<tr><td class="border px-2 py-1 text-gray-500 italic">Alert below 50% of Benchmark</td>`;
-            timeRanges.forEach(() => {
-                html += `<td class="border px-2 py-1 text-center" colspan="2">—</td>`;
-            });
-            html += `<td class="border px-2 py-1" colspan="2"></td></tr>`;
+                timeRanges.forEach(range => {
+                    const today = todayData[channel]?.[range] || 0;
+                    const benchmark = prevData[channel]?.[range] || 0;
+                    const isBelow50 = benchmark > 0 && today < benchmark * 0.5;
+                    const symbol = benchmark === 0 ? '—' : (isBelow50 ? '🚩' : '✅');
+                    html += `<td class="border px-2 py-1 text-center font-bold" colspan="2">${symbol}</td>`;
+                });
+            html += `<td class="border px-2 py-1 text-left" colspan="2">${status}</td></tr>`;
+
 
             html += `<tr><td class="border px-2 py-1 text-gray-500 italic">50% of Benchmark</td>`;
             timeRanges.forEach(range => {
