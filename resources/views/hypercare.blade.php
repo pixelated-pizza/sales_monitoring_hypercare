@@ -14,7 +14,7 @@
 
             <div class="mb-4">
                 <label for="pastDate" class="font-semibold text-gray-700 mr-2">Date Filter:</label>
-                <input type="date" id="pastDate" max="{{ \Carbon\Carbon::yesterday()->format('Y-m-d') }}"
+                <input type="date" id="pastDate" max="{{ \Carbon\Carbon::yesterday('Australia/Sydney')->format('Y-m-d') }}"
                     class="border px-2 py-1 rounded text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-700" />
             </div>
 

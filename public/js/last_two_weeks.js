@@ -10,7 +10,7 @@ function renderPast(selectedDate = null) {
     const params = selectedDate ? { date: selectedDate } : {};
     Promise.all([
          axios.get('/api/yesterday-sales', { params }),
-         axios.get('/api/last-week')
+         axios.get('/api/last-week', { params })
     ]).then(([todayRes, prevRes]) => {
         loadingElem.style.display = 'none';
         const todayData = todayRes.data;
@@ -115,7 +115,7 @@ function renderPast(selectedDate = null) {
             const today = comboToday[range] || 0;
             const benchmark = comboPrev[range] || 0;
             const isBelow50 = benchmark > 0 && today < benchmark * 0.5;
-            const symbol = benchmark === 0 ? '—' : (isBelow50 ? '🚩' : '✅');
+            const symbol = benchmark === 0 ? '—' : (isBelow50 ? '🚩 below 50%' : '✅ within 50%');
             html += `<td class="border px-2 py-1 text-center font-bold" colspan="2">${symbol}</td>`;
         });
         html += `<td class="border px-2 py-1 text-left" colspan="2">${comboStatus}</td></tr>`;
@@ -170,7 +170,7 @@ function renderPast(selectedDate = null) {
                     const today = todayData[channel]?.[range] || 0;
                     const benchmark = prevData[channel]?.[range] || 0;
                     const isBelow50 = benchmark > 0 && today < benchmark * 0.5;
-                    const symbol = benchmark === 0 ? '—' : (isBelow50 ? '🚩' : '✅');
+                    const symbol = benchmark === 0 ? '—' : (isBelow50 ? '🚩 below 50%' : '✅ within 50%');
                     html += `<td class="border px-2 py-1 text-center font-bold" colspan="2">${symbol}</td>`;
                 });
             html += `<td class="border px-2 py-1 text-left" colspan="2">${status}</td></tr>`;
@@ -200,10 +200,14 @@ document.getElementById('pastDate').addEventListener('change', function () {
 
 
 document.addEventListener('DOMContentLoaded', function () {
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    selectedPastDate = yesterday.toISOString().split('T')[0];
+    const now = new Date();
 
+    const sydneyTime = new Date(now.toLocaleString('en-US', { timeZone: 'Australia/Sydney' }));
+    sydneyTime.setDate(sydneyTime.getDate());
+
+    const sydneyYesterdaysDate = sydneyTime.toISOString().split('T')[0];
+
+    selectedPastDate = sydneyYesterdaysDate;
     document.getElementById('pastDate').value = selectedPastDate;
 
     renderPast(selectedPastDate);

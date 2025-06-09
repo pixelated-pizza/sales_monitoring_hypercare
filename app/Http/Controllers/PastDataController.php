@@ -79,9 +79,16 @@ class PastDataController extends Controller
 
     public function fetchSameWeekdayLastWeekSales(Request $request) {
         $dateStr = $request->query('date');
-        $baseDate = $dateStr ? Carbon::parse($dateStr, 'Australia/Sydney') : Carbon::today('Australia/Sydney')->subDay();
-        $prevWeekSameDay = $baseDate->copy()->subDays(7);
-        return $this->fetchSalesByDate($prevWeekSameDay);
+
+        if ($dateStr) {
+            $date = Carbon::parse($dateStr, 'Australia/Sydney')->subDays(7);
+        } else {
+            $date = Carbon::today('Australia/Sydney')->subDays(8);
+        }
+
+        return $this->fetchSalesByDate($date);
     }
+
+
 
 }
