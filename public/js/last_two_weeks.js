@@ -27,19 +27,17 @@ function renderPast(selectedDate = null) {
 
         const preferredOrder = ["Edisons", "Mytopia", "eBay", "BigW", "Mydeals", "Kogan", "Bunnings"];
         
-
-        const now = new Date();
-        const yesterday = new Date(now);
-        yesterday.setDate(yesterday.getDate() - 1);
-        const lastWeekOfYesterday = new Date(yesterday);
-        lastWeekOfYesterday.setDate(lastWeekOfYesterday.getDate() - 7);
+        const targetDate = selectedDate ? new Date(selectedDate) : new Date(now.setDate(now.getDate() - 1));
+        const lastWeekOfSelectedDate = new Date(targetDate);
+        lastWeekOfSelectedDate.setDate(targetDate.getDate() - 7);
 
         const formatDate = (d) => {
             const options = { year: 'numeric', month: 'long', day: 'numeric' };
             return d.toLocaleDateString(undefined, options);
         };
 
-        let html = `<div class="mb-2 font-semibold text-gray-700"><i><b>Note: </b> Benchmark values refers to the same weekday from the previous week (${formatDate(lastWeekOfYesterday)})</i></div>`;
+        let html = `<div class="mb-2 font-semibold text-gray-700"><i><b>Note: </b> Benchmark values refer to the same weekday from the previous week (${formatDate(lastWeekOfSelectedDate)})</i></div>`;
+
 
         const getPercentDiff = (sales, benchmark) => {
             if (benchmark === 0) {
