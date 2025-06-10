@@ -101,16 +101,16 @@ function renderPast(selectedDate = null) {
             html += `<td class="border px-2 py-1 text-left ${colorClass}">${diff}</td>`;
         });
 
-        const comboStatus = comboAlert ? '🚩' : (comboTodayTotal < comboPrevTotal * 0.3 ? '🚩 below 30%' : 'within 30% of the benchmark');
-        html += `<td class="border px-2 py-1 font-bold">${comboTodayTotal}</td><td class="border px-2 py-1">${comboStatus}</td></tr>`;
+        const comboStatus = comboAlert ? '🚩 below 30%' : (comboTodayTotal < comboPrevTotal * 0.3 ? '🚩 below 30%' : 'within 30% of the benchmark');
+        html += `<td class="border px-2 py-1 font-bold">${comboTodayTotal}</td><td class="border px-2 py-1 font-semibold">${comboStatus}</td></tr>`;
 
-        html += `<tr><td class="border px-2 py-1 text-gray-500 italic">Benchmark</td>`;
+        html += `<tr><td class="border px-2 py-1 text-black italic">Benchmark</td>`;
         timeRanges.forEach(range => {
             html += `<td class="border px-2 py-1 text-left" colspan="2">${comboPrev[range] || 0}</td>`;
         });
         html += `<td class="border px-2 py-1 text-left" colspan="2">${comboPrevTotal}</td></tr>`;
 
-        html += `<tr><td class="border px-2 py-1 text-gray-500 italic">Alert below 50% of Benchmark</td>`;
+        html += `<tr><td class="border px-2 py-1 text-black italic">Alert below 50% of Benchmark</td>`;
             timeRanges.forEach(range => {
                 const today = comboToday[range] || 0;
                 const benchmark = comboPrev[range] || 0;
@@ -122,7 +122,7 @@ function renderPast(selectedDate = null) {
 
 
 
-        html += `<tr><td class="border px-2 py-1 text-gray-500 italic">50% of Benchmark</td>`;
+        html += `<tr><td class="border px-2 py-1 text-black italic">50% of Benchmark</td>`;
         timeRanges.forEach(range => {
             const val = comboPrev[range] || 0;
             html += `<td class="border px-2 py-1 text-left" colspan="2">${(val / 2).toFixed(0)}</td>`;
@@ -155,18 +155,18 @@ function renderPast(selectedDate = null) {
                 totalPrev += prev;
             });
 
-            const status = alert ? '🚩' : (totalToday < totalPrev * 0.3 ? '🚩 below 30%' : 'within 30% of the benchmark');
-            row += `<td class="border px-2 py-1 font-bold">${totalToday}</td><td class="border px-2 py-1">${status}</td></tr>`;
+            const status = alert ? '🚩 below 30%' : (totalToday < totalPrev * 0.3 ? '🚩 below 30%' : 'within 30% of the benchmark');
+            row += `<td class="border px-2 py-1 font-bold">${totalToday}</td><td class="border px-2 py-1 font-semibold">${status}</td></tr>`;
             html += row;
 
-            html += `<tr><td class="border px-2 py-1 text-gray-500 italic">Benchmark</td>`;
+            html += `<tr><td class="border px-2 py-1 text-black italic">Benchmark</td>`;
             timeRanges.forEach(range => {
                 const value = prevData[channel]?.[range] || 0;
                 html += `<td class="border px-2 py-1 text-left" colspan="2">${value}</td>`;
             });
             html += `<td class="border px-2 py-1 text-left" colspan="2">${totalPrev}</td></tr>`;
 
-            html += `<tr><td class="border px-2 py-1 text-gray-500 italic">Alert below 50% of Benchmark</td>`;
+            html += `<tr><td class="border px-2 py-1 text-black italic">Alert below 50% of Benchmark</td>`;
                     timeRanges.forEach(range => {
                         const today = todayData[channel]?.[range] || 0;
                         const benchmark = prevData[channel]?.[range] || 0;
@@ -176,10 +176,10 @@ function renderPast(selectedDate = null) {
             });
             html += `<td class="border px-2 py-1 bg-gray-800" colspan="2"></td></tr>`;
 
-            html += `<tr><td class="border px-2 py-1 text-gray-500 italic">50% of Benchmark</td>`;
+            html += `<tr><td class="border px-2 py-1 text-black italic">50% of Benchmark</td>`;
             timeRanges.forEach(range => {
                 const val = (prevData[channel]?.[range] || 0) / 2;
-                html += `<td class="border px-2 py-1 text-left" colspan="2">${val.toFixed(0)}</td>`;
+                html += `<td class="border px-2 py-1 text-left font-semibold" colspan="2">${val.toFixed(0)}</td>`;
             });
             html += `<td class="border px-2 py-1 text-left" colspan="2">${(totalPrev / 2).toFixed(0)}</td></tr>`;
         });

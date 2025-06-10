@@ -40,12 +40,12 @@
 
             <nav class="flex flex-col space-y-2">
                 <a href="{{ route('sales') }}"
-                    class="sidebar-text hover:text-yellow-400 
+                    class="sidebar-text hover:text-yellow-400 bg-gray-900 p-5 rounded
                     {{ request()->routeIs('sales') 
-                    ? 'text-black font-bold dark:text-yellow-300' : 'text-yellow-700 dark:text-yellow-400' }}">
+                    ? 'text-yellow-400 font-bold dark:text-yellow-300' : 'text-white dark:text-yellow-400' }}">
                     Hourly Sales Monitoring
                 </a>
-                <a href="{{ route('hypercare') }}" class="sidebar-text hover:text-yellow-400 {{ request()->routeIs('hypercare') ? 'text-black font-bold dark:text-yellow-300' : 'text-yellow-500 dark:text-yellow-400' }}">
+                <a href="{{ route('hypercare') }}" class="sidebar-text hover:text-yellow-400 bg-gray-900 p-5 rounded {{ request()->routeIs('hypercare') ? 'text-yellow-400 font-bold dark:text-yellow-300' : 'text-white dark:text-yellow-400' }}">
                     Hypercare
                 </a>
             </nav>
