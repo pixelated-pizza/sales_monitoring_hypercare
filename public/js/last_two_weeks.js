@@ -64,7 +64,7 @@ function renderPast(selectedDate = null) {
         timeRanges.forEach(range => {
             html += `<th class="border px-2 py-1 bg-cyan-100" style="background-color: #00FFFF;">${range}</th><th class="border px-2 py-1">% Diff</th>`;
         });
-        html += `<th class="border px-2 py-1">TOTAL</th><th class="border px-2 py-1">Total Sales Status</th></tr></thead><tbody>`;
+        html += `<th class="border px-2 py-1">TOTAL</th><th class="border px-2 py-1">Total Sales below 30% of the benchmark</th></tr></thead><tbody>`;
 
         comboChannels.forEach(channel => {
             let row = `<tr class="even:bg-gray-50"><td class="border px-2 py-1 font-semibold">${channel}</td>`;
@@ -111,14 +111,15 @@ function renderPast(selectedDate = null) {
         html += `<td class="border px-2 py-1 text-left" colspan="2">${comboPrevTotal}</td></tr>`;
 
         html += `<tr><td class="border px-2 py-1 text-gray-500 italic">Alert below 50% of Benchmark</td>`;
-        timeRanges.forEach(range => {
-            const today = comboToday[range] || 0;
-            const benchmark = comboPrev[range] || 0;
-            const isBelow50 = benchmark > 0 && today < benchmark * 0.5;
-            const symbol = benchmark === 0 ? '—' : (isBelow50 ? '🚩 below 50%' : '✅ within 50%');
-            html += `<td class="border px-2 py-1 text-center font-bold" colspan="2">${symbol}</td>`;
-        });
-        html += `<td class="border px-2 py-1 text-left" colspan="2">${comboStatus}</td></tr>`;
+            timeRanges.forEach(range => {
+                const today = comboToday[range] || 0;
+                const benchmark = comboPrev[range] || 0;
+                const isBelow50 = benchmark > 0 && today < benchmark * 0.5;
+                const symbol = benchmark === 0 ? '' : (isBelow50 ? '🚩 below 50%' : '✅ within 50%');
+                html += `<td class="border px-2 py-1 text-center font-bold" colspan="2">${symbol}</td>`;
+            });
+        html += `<td class="border px-2 py-1 text-left bg-gray-800" colspan="2"></td></tr>`;
+
 
 
         html += `<tr><td class="border px-2 py-1 text-gray-500 italic">50% of Benchmark</td>`;
@@ -136,7 +137,7 @@ function renderPast(selectedDate = null) {
             let totalPrev = 0;
             let alert = false;
 
-            let row = `<tr class="even:bg-gray-50"><td class="border px-2 py-1 font-semibold">${channel}</td>`;
+            let row = `<tr class="bg-gray-200"><td class="border px-2 py-1 font-semibold">${channel}</td>`;
             timeRanges.forEach(range => {
                 const today = todayData[channel]?.[range] || 0;
                 const prev = prevData[channel]?.[range] || 0;
@@ -166,15 +167,14 @@ function renderPast(selectedDate = null) {
             html += `<td class="border px-2 py-1 text-left" colspan="2">${totalPrev}</td></tr>`;
 
             html += `<tr><td class="border px-2 py-1 text-gray-500 italic">Alert below 50% of Benchmark</td>`;
-                timeRanges.forEach(range => {
-                    const today = todayData[channel]?.[range] || 0;
-                    const benchmark = prevData[channel]?.[range] || 0;
-                    const isBelow50 = benchmark > 0 && today < benchmark * 0.5;
-                    const symbol = benchmark === 0 ? '—' : (isBelow50 ? '🚩 below 50%' : '✅ within 50%');
+                    timeRanges.forEach(range => {
+                        const today = todayData[channel]?.[range] || 0;
+                        const benchmark = prevData[channel]?.[range] || 0;
+                        const isBelow50 = benchmark > 0 && today < benchmark * 0.5;
+                        const symbol = benchmark === 0 ? '' : (isBelow50 ? '🚩 below 50%' : '✅ within 50%');
                     html += `<td class="border px-2 py-1 text-center font-bold" colspan="2">${symbol}</td>`;
-                });
-            html += `<td class="border px-2 py-1 text-left" colspan="2">${status}</td></tr>`;
-
+            });
+            html += `<td class="border px-2 py-1 bg-gray-800" colspan="2"></td></tr>`;
 
             html += `<tr><td class="border px-2 py-1 text-gray-500 italic">50% of Benchmark</td>`;
             timeRanges.forEach(range => {
@@ -200,15 +200,16 @@ document.getElementById('pastDate').addEventListener('change', function () {
 
 
 document.addEventListener('DOMContentLoaded', function () {
-    const now = new Date();
+    const sydneyNowStr = new Date().toLocaleString('en-US', { timeZone: 'Australia/Sydney' });
+    const sydneyDate = new Date(sydneyNowStr);
 
-    const sydneyTime = new Date(now.toLocaleString('en-US', { timeZone: 'Australia/Sydney' }));
-    sydneyTime.setDate(sydneyTime.getDate());
+    sydneyDate.setDate(sydneyDate.getDate() - 1);
 
-    const sydneyYesterdaysDate = sydneyTime.toISOString().split('T')[0];
+    const sydneyYesterdaysDate = sydneyDate.toISOString().split('T')[0];
 
     selectedPastDate = sydneyYesterdaysDate;
     document.getElementById('pastDate').value = selectedPastDate;
 
     renderPast(selectedPastDate);
 });
+

@@ -79,7 +79,7 @@ function renderSummary() {
                 <th class="px-2 py-1 bg-cyan-100 text-xs" style="background-color: #00FFFF;">${range}</th>
                     <th class="border px-2 py-1 bg-cyan-50 text-xs">% Diff</th>`;
         });
-        html += `<th class="border px-2 py-1">TOTAL</th><th class="border px-2 py-1">Total Sales Status</th></tr>
+        html += `<th class="border px-2 py-1">TOTAL</th><th class="border px-2 py-1">Total Sales below 30% of the benchmark</th></tr>
       </thead><tbody>`;
 
         const comboChannels = ["Edisons", "Mytopia"];
@@ -171,7 +171,7 @@ function renderSummary() {
             let totalPrev = 0;
             let alert = false;
 
-            let row = `<tr class="even:bg-gray-50" style="border: 2px solid black;"><td class="border px-2 py-1 font-semibold">${channel}</td>`;
+            let row = `<tr class="bg-gray-200" style="border: 2px solid black;"><td class="border px-2 py-1 font-bold">${channel}</td>`;
 
             timeRanges.forEach(range => {
                 const future = isFutureRange(range);
