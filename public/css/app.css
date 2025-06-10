@@ -20,7 +20,6 @@ table td, table th, table tr {
 .dark body {
   background-color: #1a202c; 
   color: #f7fafc; 
-  font-weight: bold;
   transition: background-color 0.3s, color 0.3s;
 }
 
