@@ -6,13 +6,14 @@
 
 @section('content')
     <section class="p-6 max-w-full mx-auto">
-        <h1 class="text-3xl font-bold text-gray-900 mb-6 text-center dark:text-gray-100">📊 Hourly Sales Hypercare</h1>
+        
 
 
         <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-200 mb-8">
 
 
             <div class="mb-4">
+                <h1 class="text-lg font-bold text-gray-900 mb-5 text-center text-black dark:text-black">📊 Hourly Sales Hypercare</h1>
                 <label for="pastDate" class="font-semibold text-gray-700 mr-2">Date Filter:</label>
                 <input type="date" id="pastDate" max="{{ \Carbon\Carbon::yesterday('Australia/Sydney')->format('Y-m-d') }}"
                     class="border px-2 py-1 rounded text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-700" />

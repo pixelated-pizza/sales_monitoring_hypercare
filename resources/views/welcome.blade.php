@@ -11,6 +11,7 @@
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
         <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
         <!-- Styles / Scripts -->
         <link rel="stylesheet" href="{{ asset('css/app.css') }}">
@@ -43,11 +44,12 @@
                     class="sidebar-text hover:text-yellow-400 bg-gray-900 p-5 rounded
                     {{ request()->routeIs('sales') 
                     ? 'text-yellow-400 font-bold dark:text-yellow-300' : 'text-white dark:text-yellow-400' }}">
-                    Hourly Sales Monitoring
+                    Real-time Monitoring
                 </a>
-                <a href="{{ route('hypercare') }}" class="sidebar-text hover:text-yellow-400 bg-gray-900 p-5 rounded {{ request()->routeIs('hypercare') ? 'text-yellow-400 font-bold dark:text-yellow-300' : 'text-white dark:text-yellow-400' }}">
+                <a href="{{ route('hypercare') }}" class="sidebar-text hover:text-yellow-400 bg-gray-900 p-5 rounded {{ request()->routeIs('hypercare') ? 'text-yellow-400   font-bold dark:text-yellow-300' : 'text-white dark:text-yellow-400' }}">
                     Hypercare
                 </a>
+                
             </nav>
 
             <div class="flex items-center gap-2 mt-auto">

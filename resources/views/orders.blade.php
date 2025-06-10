@@ -4,10 +4,9 @@
 
 @section('content')
     <section class="p-6 max-w-full mx-auto">
-        <h1 class="text-3xl font-bold text-gray-900 mb-6 text-center">📊 Hourly Sales Monitoring</h1>
-
+        
         <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-200 mb-8">
-            <span class="text-xl font-semibold mb-4 text-gray-900">Real-time Monitoring</span>
+            <span class="text-lg font-semibold mb-4 text-gray-900 text-center mb-5">📊 Real-time Monitoring</span>
 
             <div id="loading" style="display:none; text-align:center; margin:10px 0;">
                 <div class="spinner" style="display:inline-block; vertical-align:middle; margin-right: 8px;"></div>
