@@ -1,14 +1,21 @@
+let hasLoaded = false;
 function renderSummary() {
     const loadingElem = document.getElementById('loading');
      const container = document.getElementById('summary-report');
 
-    loadingElem.style.display = 'block';  
-    container.innerHTML = ''; 
+    if(!hasLoaded){
+        loadingElem.style.display = 'block';
+        container.innerHTML = '';    
+    }
+
+
+
     Promise.all([
         axios.get('/api/today-sales'),
         axios.get('/api/prev-sales')
     ]).then(([todayRes, prevRes]) => {
         loadingElem.style.display = 'none';
+        hasLoaded = true;
         const todayData = todayRes.data;
         const prevData = prevRes.data;
 
@@ -144,7 +151,7 @@ function renderSummary() {
             const today = todayData[channel]?.[range] || 0;
             const prev = prevData[channel]?.[range] || 0;
             const isRedFlag = prev > 0 && today < prev * 0.5;
-            html += `<td class="border px-2 py-1 text-center font-bold text-red-700" colspan="2">${isRedFlag ? '🚩' : '—'}</td>`;
+            html += `<td class="border px-2 py-1 text-center font-bold text-red-700" colspan="2">${isRedFlag ? '🚩' : ''}</td>`;
         });
         } else {
             timeRanges.forEach(() => {

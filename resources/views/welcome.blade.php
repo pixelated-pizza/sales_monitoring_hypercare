@@ -10,6 +10,7 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js"></script>
         <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
@@ -24,7 +25,6 @@
         @endif
     </head>
     <body class="h-full bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors">
-        
         
          <div class="flex h-screen">
          <aside id="sidebar" class="sidebar w-64 bg-gray-100 dark:bg-gray-800 p-4 flex flex-col">

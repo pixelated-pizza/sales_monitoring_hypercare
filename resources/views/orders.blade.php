@@ -13,6 +13,8 @@
                 <span style="vertical-align:middle;">Loading data...</span>
             </div>
             <div id="summary-report" class="overflow-auto"></div>
+
+            
         </div>
 
 

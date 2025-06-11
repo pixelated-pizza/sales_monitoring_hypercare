@@ -10,61 +10,82 @@ use Illuminate\Support\Facades\Cache;
 class PastDataController extends Controller
 {
     protected $timeBuckets = [
-        '12AM - 8AM'   => [0, 7],
-        '9AM - 10AM'   => [9, 10],
-        '11AM - 2PM'   => [11, 14],
-        '3PM - 5PM'    => [15, 17],
-        '6PM - 9PM'    => [18, 21],
-        '10PM - 11PM'  => [22, 23],
+        '1AM - 8AM'   => [1, 8],
+        '9AM - 10AM'  => [9, 10],
+        '11AM - 2PM'  => [11, 14],
+        '3PM - 5PM'   => [15, 17],
+        '6PM - 9PM'   => [18, 21],
+        '10PM - 12AM' => [22, 23, 0],
     ];
 
+
+
     private function fetchSalesByDate($date)
-{
-    $cacheKey = 'sales_' . $date->toDateString();
+    {
+        $cacheKey = 'sales_' . $date->toDateString();
+        $timeBuckets = $this->timeBuckets;
 
-    return Cache::remember($cacheKey, now()->addMinutes(10), function () use ($date) {
-        $client = new \GuzzleHttp\Client();
-        $dateStr = $date->format('Y-m-d');
-        $dateFrom = "{$dateStr} 00:00:00";
-        $dateTo = "{$dateStr} 23:59:59";
+        return Cache::remember($cacheKey, now()->addMinutes(10), function () use ($date, $timeBuckets) {
+            $client = new \GuzzleHttp\Client();
+            $dateFrom = $date->copy()
+                ->setTimezone('Australia/Sydney')
+                ->setTime(1, 0, 0)
+                ->timezone('UTC')
+                ->format('Y-m-d H:i:s');
 
-        $response = $client->post(env('NETO_API_URL'), [
-            'headers' => [
-                'Accept' => 'application/json',
-                'NETOAPI_ACTION' => 'GetOrder',
-                'NETOAPI_KEY' => env('NETO_API_KEY')
-            ],
-            'json' => [
-                "Filter" => [
-                    "DatePlacedFrom" => [$dateFrom],
-                    "DatePlacedTo" => [$dateTo],
-                    "SalesChannel" => ["Edisons", "Mytopia", "eBay", "BigW", "Mydeals", "Kogan", "Bunnings"],
-                    "OutputSelector" => ["OrderID", "SalesChannel", "DatePlaced"]
+            $dateTo = $date->copy()
+                ->addDay()
+                ->setTimezone('Australia/Sydney')
+                ->setTime(0, 59, 59)
+                ->timezone('UTC')
+                ->format('Y-m-d H:i:s');
+
+            $response = $client->post(env('NETO_API_URL'), [
+                'headers' => [
+                    'Accept' => 'application/json',
+                    'NETOAPI_ACTION' => 'GetOrder',
+                    'NETOAPI_KEY' => env('NETO_API_KEY')
+                ],
+                'json' => [
+                    "Filter" => [
+                        "DatePlacedFrom" => [$dateFrom],
+                        "DatePlacedTo" => [$dateTo],
+                        "SalesChannel" => ["Edisons", "Mytopia", "eBay", "BigW", "Mydeals", "Kogan", "Bunnings"],
+                        "OutputSelector" => ["OrderID", "SalesChannel", "DatePlaced", "OrderLine"]
+                    ]
                 ]
-            ]
-        ]);
+            ]);
 
-        $orders = json_decode($response->getBody(), true)['Order'] ?? [];
-        $grouped = [];
+            $orders = json_decode($response->getBody(), true)['Order'] ?? [];
+            $grouped = [];
 
-        foreach ($orders as $order) {
-            if (empty($order['SalesChannel']) || empty($order['DatePlaced'])) continue;
+            foreach ($orders as $order) {
+                if (!isset($order['SalesChannel'], $order['DatePlaced'], $order['OrderLine'])) continue;
 
-            $hour = \Carbon\Carbon::parse($order['DatePlaced'])->addHours(10)->hour;
+                $hasCxrSku = false;
+                foreach ($order['OrderLine'] as $line) {
+                    if (isset($line['SKU']) && str_starts_with($line['SKU'], 'CXR-')) {
+                        $hasCxrSku = true;
+                        break;
+                    }
+                }
+                if ($hasCxrSku) continue;
 
-            foreach ($this->timeBuckets as $label => [$start, $end]) {
-                if ($hour >= $start && $hour <= $end) {
-                    $channel = $order['SalesChannel'];
-                    $grouped[$channel][$label] = ($grouped[$channel][$label] ?? 0) + 1;
-                    break;
+                $datePlaced = Carbon::parse($order['DatePlaced'])->addHours(10);
+                $hour = (int) $datePlaced->format('H');
+
+                foreach ($timeBuckets as $label => [$start, $end]) {
+                    if ($hour >= $start && $hour <= $end) {
+                        $channel = $order['SalesChannel'];
+                        $grouped[$channel][$label] = ($grouped[$channel][$label] ?? 0) + 1;
+                        break;
+                    }
                 }
             }
-        }
 
-        return $grouped;
-    });
-}
-
+            return $grouped;
+        });
+    }
 
     public function fetchYesterdaySales(Request $request)
     {
@@ -86,3 +107,60 @@ class PastDataController extends Controller
         return $this->fetchSalesByDate($date);
     }
 }
+
+// private function fetchSalesByDate($date) {
+    //     $cacheKey = 'sales_' . $date->toDateString();
+    //     $timeBuckets = $this->timeBuckets; 
+
+    //     return Cache::remember($cacheKey, now()->addMinutes(10), function () use ($date, $timeBuckets) {
+    //         $client = new \GuzzleHttp\Client();
+    //         $dateStr = $date->format('Y-m-d');
+    //         $dateFrom = "{$dateStr} 00:00:00";
+    //         $dateTo = "{$dateStr} 23:59:59";
+
+    //         $response = $client->post(env('NETO_API_URL'), [
+    //             'headers' => [
+    //                 'Accept' => 'application/json',
+    //                 'NETOAPI_ACTION' => 'GetOrder',
+    //                 'NETOAPI_KEY' => env('NETO_API_KEY')
+    //             ],
+    //             'json' => [
+    //                 "Filter" => [
+    //                     "DatePlacedFrom" => [$dateFrom],
+    //                     "DatePlacedTo" => [$dateTo],
+    //                     "SalesChannel" => ["Edisons", "Mytopia", "eBay", "BigW", "Mydeals", "Kogan", "Bunnings"],
+    //                     "OutputSelector" => ["OrderID", "SalesChannel", "DatePlaced", "OrderLine"]
+    //                 ]
+    //             ]
+    //         ]);
+
+    //         $orders = json_decode($response->getBody(), true)['Order'] ?? [];
+    //         $grouped = [];
+
+    //         foreach ($orders as $order) {
+    //             if (!isset($order['SalesChannel'], $order['DatePlaced'], $order['OrderLine'])) continue;
+
+    //             $hasCxrSku = false;
+    //             foreach ($order['OrderLine'] as $line) {
+    //                 if (isset($line['SKU']) && str_starts_with($line['SKU'], 'CXR-')) {
+    //                     $hasCxrSku = true;
+    //                     break;
+    //                 }
+    //             }
+    //             if ($hasCxrSku) continue;
+
+    //             $datePlaced = Carbon::parse($order['DatePlaced'])->addHours(10);
+    //             $hour = (int) $datePlaced->format('H');
+
+    //             foreach ($timeBuckets as $label => [$start, $end]) {
+    //                 if ($hour >= $start && $hour <= $end) {
+    //                     $channel = $order['SalesChannel'];
+    //                     $grouped[$channel][$label] = ($grouped[$channel][$label] ?? 0) + 1;
+    //                     break;
+    //                 }
+    //             }
+    //         }
+
+    //         return $grouped;
+    //     });
+    // }

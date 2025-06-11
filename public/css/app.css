@@ -58,3 +58,13 @@ table td, table th, table tr {
 .transition-transform {
   transition: transform 0.3s ease-in-out;
 }
+
+.loader {
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid #555;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  margin: auto;
+  animation: spin 0.9s linear infinite;
+}
