@@ -27,7 +27,7 @@
     <body class="h-full bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors">
         
          <div class="flex h-screen">
-         <aside id="sidebar" class="sidebar w-64 bg-gray-100 dark:bg-gray-800 p-4 flex flex-col">
+         <aside id="sidebar" class="sidebar w-64 bg-gray-200 dark:bg-gray-800 p-4 flex flex-col border border-black">
             <div class="flex items-center justify-between mb-6">
                 <h2 class="text-xl font-semibold sidebar-text">Dashboard</h2>
                     <button id="collapseBtn" aria-label="Toggle sidebar" class="p-1 rounded hover:bg-gray-300 dark:hover:bg-gray-700">

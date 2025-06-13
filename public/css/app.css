@@ -1,70 +1,185 @@
-table td, table th, table tr {
-  border: 1px solid #000; 
-}
+ @media (prefers-color-scheme: dark) {
+     :root {
+         --bg: #111827;
+         --text: #e5e7eb;
+     }
+ }
 
-.spinner {
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #3498db;
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
-  animation: spin 1s linear infinite;
-  display: inline-block;
-}
+ :root {
+     color-scheme: light dark;
+ }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
+ table td,
+ table th,
+ table tr {
+     border: 1px solid #000;
+     color: inherit;
+ }
 
-.dark body {
-  background-color: #1a202c; 
-  color: #f7fafc; 
-  transition: background-color 0.3s, color 0.3s;
-}
+ thead tr th {
+     position: sticky;
+     top: 0;
+     z-index: 10;
+     background-color: #f3f4f6;
+ }
 
-.dark .sidebar {
-  background-color: #2d3748; 
-  color: #edf2f7;
-}
+ .dark table td,
+ .dark table th,
+ .dark table tr {
+     border: 1px solid #fff;
+     color: #f7fafc;
+ }
 
-.dark a {
-  color: #c5dae9; 
-}
+ .dark h1 h2 span {
+     color: white;
+ }
 
-.dark button {
-  background-color: #4a5568; 
-  color: #e2e8f0; 
-}
+ .dark thead tr th table label {
+     background-color: #2d3748;
+ }
 
-.sidebar {
-  transition: width 0.3s ease;
-}
-.sidebar-collapsed .sidebar-text {
-  display: none;
-}
-.sidebar-collapsed .sidebar-icon {
-  justify-content: center;
-}
+ .loader,
+ .spinner {
+     border: 6px solid #f3f3f3;
+     border-top: 6px solid #3498db;
+     border-radius: 50%;
+     width: 40px;
+     height: 40px;
+     animation: spin 0.9s linear infinite;
+     margin: auto;
+ }
 
-.toggle-thumb {
-  transform: translateX(0);
-}
+ @keyframes spin {
+     0% {
+         transform: rotate(0deg);
+     }
 
-.dark .toggle-thumb {
-  transform: translateX(24px); 
-}
+     100% {
+         transform: rotate(360deg);
+     }
+ }
 
-.transition-transform {
-  transition: transform 0.3s ease-in-out;
-}
+ body {
+     transition: background-color 0.3s, color 0.3s;
+ }
 
-.loader {
-  border: 6px solid #f3f3f3;
-  border-top: 6px solid #555;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  margin: auto;
-  animation: spin 0.9s linear infinite;
-}
+ .dark body {
+     background-color: #1a202c;
+     color: #f7fafc;
+ }
+
+ .dark .main-content div {
+     background-color: #1a202c;
+ }
+
+ .sidebar {
+     transition: width 0.3s ease;
+ }
+
+ .sidebar-collapsed .sidebar-text {
+     display: none;
+ }
+
+ .sidebar-collapsed .sidebar-icon {
+     justify-content: center;
+ }
+
+ .toggle-thumb {
+     transform: translateX(0);
+ }
+
+ .dark .toggle-thumb {
+     transform: translateX(24px);
+ }
+
+ .transition-transform {
+     transition: transform 0.3s ease-in-out;
+ }
+
+ .sales-table th,
+ .sales-table td {
+     padding: 6px 8px;
+     border: 1px solid #d1d5db;
+     font-size: 13px;
+ }
+
+ .sales-table th {
+     background-color: #f3f4f6;
+     font-weight: 600;
+ }
+
+ .sales-table tr:nth-child(even) {
+     background-color: #f9fafb;
+ }
+
+ .dark .sales-table th {
+     background-color: #2d3748;
+ }
+
+ .dark .sales-table tr:nth-child(even) {
+     background-color: #1e293b;
+ }
+
+ .dark .sales-table td {
+     border-color: #4a5568;
+ }
+
+ .sales-table .highlight-green {
+     color: #047857;
+     font-weight: 600;
+ }
+
+ .sales-table .highlight-red {
+     color: #b91c1c;
+     font-weight: 700;
+ }
+
+ /* Alerts & Benchmarks */
+ .alert-row {
+     background-color: #fef2f2;
+     color: black;
+ }
+
+ .benchmark-row {
+     background-color: #f0fdfa;
+ }
+
+ .benchmark-50-row {
+     background-color: #fefce8;
+ }
+
+ .dark .alert-row,
+ .dark .benchmark-row,
+ .dark .benchmark-50-row {
+     background-color: #2d3748;
+     color: #f0fdfa;
+ }
+
+ .dark .sidebar {
+     background-color: #2d3748;
+     color: #edf2f7;
+ }
+
+ .dark a {
+     color: #90cdf4;
+ }
+
+ .dark button {
+     background-color: #4a5568;
+     color: #e2e8f0;
+ }
+
+ .toggle-website span {
+     transition: transform 0.2s ease;
+     cursor: pointer;
+     font-size: 1.1em;
+ }
+
+ .toggle-website.collapsed span {
+     transform: rotate(-90deg);
+ }
+
+ .website-details {
+     transition: all 0.3s ease;
+     overflow: hidden;
+ }

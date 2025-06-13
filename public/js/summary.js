@@ -77,7 +77,7 @@ function renderSummary() {
 
         html += `
             <div class="overflow-auto max-w-full">
-            <table class="min-w-full text-sm text-left text-gray-700 shadow-lg">
+            <table class="min-w-full border border-gray-300 text-sm text-left text-gray-700">
             <thead class="bg-blue-50 sticky top-0 z-10">
             <tr>
             <th class="px-2 py-1 bg-blue-100">Sales Channel</th>`;
@@ -86,7 +86,7 @@ function renderSummary() {
                 <th class="px-2 py-1 bg-cyan-100 text-xs" style="background-color: #00FFFF;">${range}</th>
                     <th class="border px-2 py-1 bg-cyan-50 text-xs">% Diff</th>`;
         });
-        html += `<th class="border px-2 py-1">TOTAL</th><th class="border px-2 py-1">Total Sales below 30% of the benchmark</th></tr>
+        html += `<th class="border px-2 py-1">TOTAL</th></tr>
       </thead><tbody>`;
 
         const comboChannels = ["Edisons", "Mytopia"];
@@ -126,16 +126,13 @@ function renderSummary() {
             const prev = comboPrev[range] || 0;
             const future = isFutureRange(range);
             const diff = getPercentDiff(today, prev);
-            const rawDiff = prev === 0 ? 0 : ((today - prev) / prev) * 100;
-            const isAlert = !future && prev > 0 && today < prev * 0.5;
-            const colorClass = isAlert ? 'text-red-700 font-extrabold' : (rawDiff < 0 ? 'text-red-500 font-bold' : 'text-green-500 font-bold');
+            const colorClass = today < prev * 0.5 ? 'text-red-700 font-extrabold' : 'text-green-500 font-bold';
 
             html += `<td class="border px-2 py-1 text-left ${future ? 'text-gray-400' : ''}">${future ? '—' : today}</td>`;
             html += `<td class="border px-2 py-1 text-left ${future ? 'text-gray-400' : colorClass}">${future ? '—' : diff}</td>`;
         });
 
-        const comboStatus = (comboPrevTotal > 0 && comboTodayTotal < comboPrevTotal * 0.3) ? '🚩 below 30%' : 'within 30% of the benchmark';
-        html += `<td class="border px-2 py-1 font-bold">${comboTodayTotal}</td><td class="border px-2 py-1">${comboStatus}</td></tr>`;
+        html += `<td class="border px-2 py-1 font-bold">${comboTodayTotal}</td></tr>`;
 
         html += `<tr class="border-t-2"><td class="border px-2 py-1 text-gray-500 italic">Benchmark</td>`;
 
@@ -185,12 +182,10 @@ function renderSummary() {
                 const today = todayData[channel]?.[range] || 0;
                 const prev = prevData[channel]?.[range] || 0;
                 const diff = getPercentDiff(today, prev);
-                const rawDiff = prev === 0 ? 0 : ((today - prev) / prev) * 100;
                 const isAlert = !future && prev > 0 && today < prev * 0.5;
 
                 if (!future) {
-                    let colorClass = rawDiff < 0 ? 'text-red-500 font-bold' : 'text-green-500 font-bold';
-                    if (isAlert) colorClass = 'text-red-700 font-extrabold';
+                    let colorClass = today < prev * 0.5 ? 'text-red-700 font-extrabold' : 'text-green-500 font-bold';
                     row += `<td class="border px-2 py-1 text-left">${today}</td>`;
                     row += `<td class="border px-2 py-1 text-left ${colorClass}">${diff}</td>`;
                     if (isAlert) alert = true;
@@ -202,8 +197,7 @@ function renderSummary() {
                 totalPrev += prev;
             });
 
-            const status = (totalPrev > 0 && totalToday < totalPrev * 0.3) ? '🚩 below 30%' : 'within 30% of the benchmark';
-            row += `<td class="border px-2 py-1 font-bold">${totalToday}</td><td class="border px-2 py-1">${status}</td></tr>`;
+            row += `<td class="border px-2 py-1 font-bold">${totalToday}</td></tr>`;
             html += row;
 
             html += `<tr><td class="border px-2 py-1 text-gray-500 italic">Benchmark</td>`;
