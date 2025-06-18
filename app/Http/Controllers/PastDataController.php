@@ -19,14 +19,13 @@ class PastDataController extends Controller
     ];
 
 
-
     private function fetchSalesByDate($date)
     {
         $cacheKey = 'sales_' . $date->toDateString();
         $timeBuckets = $this->timeBuckets;
 
         return Cache::remember($cacheKey, now()->addMinutes(10), function () use ($date, $timeBuckets) {
-            $client = new \GuzzleHttp\Client();
+            $client = new Client();
             $dateFrom = $date->copy()
                 ->setTimezone('Australia/Sydney')
                 ->setTime(1, 0, 0)
@@ -62,14 +61,7 @@ class PastDataController extends Controller
             foreach ($orders as $order) {
                 if (!isset($order['SalesChannel'], $order['DatePlaced'], $order['OrderLine'])) continue;
 
-                $hasCxrSku = false;
-                foreach ($order['OrderLine'] as $line) {
-                    if (isset($line['SKU']) && str_starts_with($line['SKU'], 'CXR-')) {
-                        $hasCxrSku = true;
-                        break;
-                    }
-                }
-                if ($hasCxrSku) continue;
+            
 
                 $datePlaced = Carbon::parse($order['DatePlaced'])->addHours(10);
                 $hour = (int) $datePlaced->format('H');
@@ -164,3 +156,12 @@ class PastDataController extends Controller
     //         return $grouped;
     //     });
     // }
+                //code if orders are wanted to be filtered
+                // $hasCxrSku = false;
+                // foreach ($order['OrderLine'] as $line) {
+                //     if (isset($line['SKU']) && str_starts_with($line['SKU'], 'CXR-')) {
+                //         $hasCxrSku = true;
+                //         break;
+                //     }
+                // }
+                // if ($hasCxrSku) continue;

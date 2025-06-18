@@ -20,12 +20,12 @@ function renderSummary() {
         const prevData = prevRes.data;
 
         const timeRanges = [
-            '12AM - 8AM',
+            '1AM - 8AM',
             '9AM - 10AM',
             '11AM - 2PM',
             '3PM - 5PM',
             '6PM - 9PM',
-            '10PM - 11PM'
+            '10PM - 12AM'
         ];
 
         const preferredOrder = ["Edisons", "Mytopia", "eBay", "BigW", "Mydeals", "Kogan", "Bunnings"];

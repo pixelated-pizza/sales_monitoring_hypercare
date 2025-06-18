@@ -12,9 +12,13 @@ Route::get('/hypercare', function () {
     return view('hypercare');  
 })->name('hypercare');
 
-Route::get('/api/prev-sales', [OrderController::class, 'fetchAndGroupSales']);
+Route::get('/hourly_data', function () {
+    return view('hourly_data');  
+})->name('hourly_data');
 
-Route::get('/api/today-sales', [OrderController::class, 'fetchAndGroupTodaySales']);
+Route::get('/api/prev-sales', [OrderController::class, 'fetchSameWeekdayLastWeekSales']);
+
+Route::get('/api/today-sales', [OrderController::class, 'fetchTodaySales']);
 
 Route::get('/api/two-weeks', [PastDataController::class, 'groupOrdersByTimeBucket']);
 

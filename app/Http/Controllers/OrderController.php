@@ -6,134 +6,87 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 
 class OrderController extends Controller
 {
-
-
-    public function fetchAndGroupSales() {
-    $client = new Client();
-    $lastWeekSameDay = Carbon::today('Australia/Sydney')->subWeek(); 
-
-    $dateFrom = $lastWeekSameDay->copy()->format('Y-m-d') . ' 00:00:00';
-    $dateTo   = $lastWeekSameDay->copy()->format('Y-m-d') . ' 23:59:59';
-
-    // dd($dateTo);
-
-    $response = $client->request('POST', env('NETO_API_URL'), [
-        'headers' => [
-            'Accept' => 'application/json',
-            'NETOAPI_ACTION' => 'GetOrder',
-            'NETOAPI_KEY' => env('NETO_API_KEY')
-        ],
-        'json' => [
-            "Filter" => [
-                "DatePlacedFrom" => [$dateFrom],
-                "DatePlacedTo" => [$dateTo],
-                "SalesChannel" => ["Edisons", "Mytopia", "eBay", "BigW", "Mydeals", "Kogan", "Bunnings"],
-                "OutputSelector" => ["OrderID", "SalesChannel", "DatePlaced"]
-            ]
-        ]
-    ]);
-
-    $result = json_decode($response->getBody(), true);
-    $orders = $result['Order'] ?? [];
-
-    $timeBuckets = [
-    '12AM - 8AM'   => [0, 7],
-    '9AM - 10AM'   => [9, 10],
-    '11AM - 2PM'   => [11, 14],
-    '3PM - 5PM'    => [15, 17],
-    '6PM - 9PM'    => [18, 21],
-    '10PM - 11PM'  => [22, 23],
-];
-
-    $grouped = [];
-
-    foreach ($orders as $order) {
-        if (!isset($order['SalesChannel'], $order['DatePlaced'])) {
-            continue;
-        }
-
-        $datePlaced = Carbon::parse($order['DatePlaced'])->addHours(10);
-        $hour = (int) $datePlaced->format('H');
-
-        $matchedBucket = null;
-        foreach ($timeBuckets as $label => [$start, $end]) {
-            if ($hour >= $start && $hour <= $end) {
-                $matchedBucket = $label;
-                break;
-            }
-        }
-
-        if ($matchedBucket) {
-            $channel = $order['SalesChannel'];
-            $grouped[$channel][$matchedBucket] = ($grouped[$channel][$matchedBucket] ?? 0) + 1;
-        }
-    }
-
-    return $grouped;
-}
-
-public function fetchAndGroupTodaySales()
-{
-    $client = new Client();
-    $today = Carbon::today('Australia/Sydney')->format('Y-m-d'); 
-
-    $response = $client->request('POST', env('NETO_API_URL'), [
-        'headers' => [
-            'Accept' => 'application/json',
-            'NETOAPI_ACTION' => 'GetOrder',
-            'NETOAPI_KEY' => env('NETO_API_KEY')
-        ],
-        'json' => [
-            "Filter" => [
-                "DatePlacedFrom" => ["{$today} 00:00:00"],
-                "DatePlacedTo" => ["{$today} 23:59:59"],
-                "SalesChannel" => ["Edisons", "Mytopia", "eBay", "BigW", "Mydeals", "Kogan", "Bunnings"],
-                "OutputSelector" => ["OrderID", "SalesChannel", "DatePlaced"]
-            ]
-        ]
-    ]);
-
-    $result = json_decode($response->getBody(), true);
-    $orders = $result['Order'] ?? [];
-
-    $timeBuckets = [
-        '12AM - 8AM'   => [0, 7],
-        '9AM - 10AM'   => [9, 10],
-        '11AM - 2PM'   => [11, 14],
-        '3PM - 5PM'    => [15, 17],
-        '6PM - 9PM'    => [18, 21],
-        '10PM - 11PM'  => [22, 23],
+    protected $timeBuckets = [
+        '1AM - 8AM'   => [1, 8],
+        '9AM - 10AM'  => [9, 10],
+        '11AM - 2PM'  => [11, 14],
+        '3PM - 5PM'   => [15, 17],
+        '6PM - 9PM'   => [18, 21],
+        '10PM - 12AM' => [22, 23, 0],
     ];
 
-    $grouped = [];
+    public function fetchAndGroupSales($date)
+    {
+        $cacheKey = 'sales_' . $date->toDateString();
+        $timeBuckets = $this->timeBuckets;
 
-    foreach ($orders as $order) {
-        if (!isset($order['SalesChannel'], $order['DatePlaced'])) {
-            continue;
-        }
+        return Cache::remember($cacheKey, now()->addMinutes(10), function () use ($date, $timeBuckets) {
+            $client = new Client();
 
-        $datePlaced = Carbon::parse($order['DatePlaced'])->addHours(10);
-        $hour = (int) $datePlaced->format('H');
+            $dateFrom = $date->copy()
+                ->setTimezone('Australia/Sydney')
+                ->setTime(1, 0, 0)
+                ->timezone('UTC')
+                ->format('Y-m-d H:i:s');
 
-        $matchedBucket = null;
-        foreach ($timeBuckets as $label => [$start, $end]) {
-            if ($hour >= $start && $hour <= $end) {
-                $matchedBucket = $label;
-                break;
+            $dateTo = $date->copy()
+                ->addDay()
+                ->setTimezone('Australia/Sydney')
+                ->setTime(0, 59, 59)
+                ->timezone('UTC')
+                ->format('Y-m-d H:i:s');
+
+            $response = $client->post(env('NETO_API_URL'), [
+                'headers' => [
+                    'Accept' => 'application/json',
+                    'NETOAPI_ACTION' => 'GetOrder',
+                    'NETOAPI_KEY' => env('NETO_API_KEY')
+                ],
+                'json' => [
+                    "Filter" => [
+                        "DatePlacedFrom" => [$dateFrom],
+                        "DatePlacedTo" => [$dateTo],
+                        "SalesChannel" => ["Edisons", "Mytopia", "eBay", "BigW", "Mydeals", "Kogan", "Bunnings"],
+                        "OutputSelector" => ["OrderID", "SalesChannel", "DatePlaced", "OrderLine"]
+                    ]
+                ]
+            ]);
+
+            $orders = json_decode($response->getBody(), true)['Order'] ?? [];
+            $grouped = [];
+
+            foreach ($orders as $order) {
+                if (!isset($order['SalesChannel'], $order['DatePlaced'], $order['OrderLine'])) continue;
+
+                $datePlaced = Carbon::parse($order['DatePlaced'])->addHours(10); 
+                $hour = (int) $datePlaced->format('H');
+
+                foreach ($timeBuckets as $label => [$start, $end]) {
+                    if ($hour >= $start && $hour <= $end) {
+                        $channel = $order['SalesChannel'];
+                        $grouped[$channel][$label] = ($grouped[$channel][$label] ?? 0) + 1;
+                        break;
+                    }
+                }
             }
-        }
 
-        if ($matchedBucket) {
-            $channel = $order['SalesChannel'];
-            $grouped[$channel][$matchedBucket] = ($grouped[$channel][$matchedBucket] ?? 0) + 1;
-        }
+            return $grouped;
+        });
     }
 
-    return $grouped;
-}
+    public function fetchTodaySales()
+    {
+        $date = Carbon::today('Australia/Sydney');
+        return $this->fetchAndGroupSales($date);
+    }
 
-
+    public function fetchSameWeekdayLastWeekSales()
+    {
+        $date = Carbon::today('Australia/Sydney')->subDays(7);
+        return $this->fetchAndGroupSales($date);
+    }
 }

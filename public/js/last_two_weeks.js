@@ -1,4 +1,5 @@
 let selectedPastDate = null;
+
 function renderPast(selectedDate = null) {
     const container = document.getElementById('past-sales');
     const loadingElem = document.getElementById('load-past');
@@ -6,10 +7,16 @@ function renderPast(selectedDate = null) {
     loadingElem.style.display = 'block';
     container.innerHTML = '';
 
-    const params = selectedDate ? { date: selectedDate } : {};
+    const params = selectedDate ? {
+        date: selectedDate
+    } : {};
     Promise.all([
-        axios.get('/api/yesterday-sales', { params }),
-        axios.get('/api/last-week', { params })
+        axios.get('/api/yesterday-sales', {
+            params
+        }),
+        axios.get('/api/last-week', {
+            params
+        })
     ]).then(([todayRes, prevRes]) => {
         loadingElem.style.display = 'none';
         const todayData = todayRes.data;
@@ -31,7 +38,11 @@ function renderPast(selectedDate = null) {
         const lastWeekOfSelectedDate = new Date(targetDate);
         lastWeekOfSelectedDate.setDate(targetDate.getDate() - 7);
 
-        const formatDate = (d) => d.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+        const formatDate = (d) => d.toLocaleDateString(undefined, {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
 
         const getPercentDiff = (sales, benchmark) => {
             if (benchmark === 0) return sales === 0 ? '0.00%' : '—';
@@ -51,8 +62,10 @@ function renderPast(selectedDate = null) {
 
 
         const comboChannels = ["Edisons", "Mytopia"];
-        let comboTodayTotal = 0, comboPrevTotal = 0;
-        const comboToday = {}, comboPrev = {};
+        let comboTodayTotal = 0,
+            comboPrevTotal = 0;
+        const comboToday = {},
+            comboPrev = {};
         let comboAlert = false;
 
         html += `<tr class="bg-gray-200 group cursor-pointer toggle-website collapsed">
@@ -109,7 +122,9 @@ function renderPast(selectedDate = null) {
             if (comboChannels.includes(channel)) return;
             if (!todayData[channel] && !prevData[channel]) return;
 
-            let totalToday = 0, totalPrev = 0, alert = false;
+            let totalToday = 0,
+                totalPrev = 0,
+                alert = false;
             let row = `<tr class="bg-gray-200"><td class="border px-2 py-1 font-semibold">${channel}</td>`;
             timeRanges.forEach(range => {
                 const today = todayData[channel]?.[range] || 0;
@@ -149,12 +164,14 @@ function renderPast(selectedDate = null) {
             if (window.pastChartInstance) window.pastChartInstance.destroy();
 
             const getSalesData = (source, channel) =>
-                channel === 'combo'
-                    ? timeRanges.map(r => (source["Edisons"]?.[r] || 0) + (source["Mytopia"]?.[r] || 0))
-                    : timeRanges.map(r => source[channel]?.[r] || 0);
+                channel === 'combo' ?
+                timeRanges.map(r => (source["Edisons"]?.[r] || 0) + (source["Mytopia"]?.[r] || 0)) :
+                timeRanges.map(r => source[channel]?.[r] || 0);
 
             const salesToday = getSalesData(todayData, channelKey);
             const salesPrev = getSalesData(prevData, channelKey);
+            const fillRedArea = salesPrev.map((v, i) => Math.max(v, v * 0.3));
+            const below30Flags = salesToday.map((v, i) => (salesPrev[i] > 0 && v < salesPrev[i] * 0.3 ? v : null));
 
             window.pastChartInstance = new Chart(ctx, {
                 type: 'line',
@@ -162,23 +179,78 @@ function renderPast(selectedDate = null) {
                     labels: timeRanges,
                     datasets: [
                         {
-                            label: formatDate(lastWeekOfSelectedDate),
-                            data: salesPrev,
-                            borderColor: 'rgba(255, 99, 132, 1)',
-                            backgroundColor: 'rgba(255, 99, 132, 0.1)',
-                            tension: 0.4,
-                            fill: false
-                        },
-                        {
-                            label: formatDate(targetDate),
+                            label: channelKey === 'combo' ? 'Website Orders' : `${channelKey} Orders`,
                             data: salesToday,
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            backgroundColor: 'rgba(54, 162, 235, 0.1)',
-                            tension: 0.4,
-                            fill: false
+                            borderColor: '#007bff',
+                            backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                            tension: 0,
+                            pointBackgroundColor: '#007bff',
+                            pointBorderColor: '#007bff',
+                            fill: true, 
+                            order: 3,
+                            datalabels: {
+                                align: 'top',
+                                anchor: 'end',
+                                color: '#007bff',
+                                font: {
+                                    weight: 'bold',
+                                    size: 12
+                                },
+                                formatter: function(value) {
+                                    return value; 
+                                }
+                            }
+                        },
+
+                        {
+                            label: '30% of Benchmark',
+                            data: salesPrev.map(v => v * 0.3),
+                            borderWidth: 1,
+                            pointRadius: 0,
+                            borderColor: 'red',
+                            borderDash: [5, 5],
+                            borderColor: 'rgba(255,0,0,0.3)',
+                            fill: {
+                                target: 'origin',
+                                above: 'rgba(255, 140, 0)',
+                                below: 'rgba(255, 140, 0)',
+                            },
+                            backgroundColor: 'rgba(255, 140, 0, 0.3)',
+                            type: 'line',
+                            tension: 0,
+                            order: 1,
+                        },
+
+                        {
+                            label: channelKey === 'combo' ? 'Website Benchmark' : `${channelKey} Benchmark`,
+                            data: salesPrev,
+                            borderColor: 'orange',
+                            backgroundColor: 'rgba(255,165,0,0,0.2)',
+                            fill: {
+                                target: 'origin',
+                                above: 'rgba(255,165,0,0.2)',
+                                below: 'rgba(255,165,0,0.2)',
+                            },
+                            tension: 0,
+                            pointBackgroundColor: 'orange',
+                            pointBorderColor: 'orange',
+                            order: 2,
+                        },
+
+                        {
+                            label: 'Alert Data',
+                            data: below30Flags,
+                            pointStyle: 'triangle',
+                            pointRadius: 10,
+                            pointBackgroundColor: 'red',
+                            borderWidth: 0,
+                            type: 'line',
+                            showLine: false,
+                            fill: false,
+                            order: 4,
                         }
-                        
                     ]
+
                 },
                 options: {
                     responsive: true,
@@ -186,29 +258,52 @@ function renderPast(selectedDate = null) {
                     plugins: {
                         title: {
                             display: true,
-                            text: `Sales Comparison`,
-                            font: { size: 18 },
+                            text: `${channelKey === 'combo' ? 'Website' : channelKey}`,
+                            font: {
+                                size: 18
+                            },
                             padding: {
                                 bottom: 10
-                            },
+                            }
                         },
                         tooltip: {
                             callbacks: {
                                 label: ctx => `${ctx.dataset.label}: ${ctx.raw}`
                             }
                         },
-                        legend: { position: 'bottom', }
+                        legend: {
+                            position: 'bottom'
+                        },
+                         datalabels: {
+                            display: function(context) {
+                                return context.dataset.label.includes('Orders');
+                            }
+                        }
                     },
                     scales: {
-                        y: { title: { display: true, text: 'Number of Sales' }, beginAtZero: true },
-                        x: { title: { display: true, text: 'Time Range' }, }
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Number of Sales'
+                            },
+                            beginAtZero: true
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Time Range'
+                            }
+                        }
                     }
-                }
+                },
+                plugins: [ChartDataLabels]
             });
 
             document.getElementById('chartLoading').style.display = 'none';
             document.getElementById('lineChartWrapper').style.display = 'block';
         }
+
+
 
         document.getElementById('channelSelect').addEventListener('change', function () {
             renderLineChart(this.value);
@@ -216,7 +311,7 @@ function renderPast(selectedDate = null) {
 
         renderLineChart('combo');
 
-        
+
         container.innerHTML = html;
 
         document.addEventListener('click', function (e) {
@@ -239,7 +334,9 @@ document.getElementById('pastDate').addEventListener('change', function () {
 });
 
 document.addEventListener('DOMContentLoaded', function () {
-    const sydneyNowStr = new Date().toLocaleString('en-US', { timeZone: 'Australia/Sydney' });
+    const sydneyNowStr = new Date().toLocaleString('en-US', {
+        timeZone: 'Australia/Sydney'
+    });
     const sydneyDate = new Date(sydneyNowStr);
     sydneyDate.setDate(sydneyDate.getDate() - 1);
     selectedPastDate = sydneyDate.toISOString().split('T')[0];

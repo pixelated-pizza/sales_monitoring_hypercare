@@ -13,6 +13,8 @@
         <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js"></script>
         <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+
 
         <!-- Styles / Scripts -->
         <link rel="stylesheet" href="{{ asset('css/app.css') }}">
@@ -24,12 +26,12 @@
             </style>
         @endif
     </head>
-    <body class="h-full bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors">
+    <body class="h-full bg-gray-300 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors">
         
          <div class="flex h-screen">
-         <aside id="sidebar" class="sidebar w-64 bg-gray-200 dark:bg-gray-800 p-4 flex flex-col border border-black">
+         <aside id="sidebar" class="sidebar w-64 bg-gray-100 dark:bg-gray-800 p-4 flex flex-col border border-black">
             <div class="flex items-center justify-between mb-6">
-                <h2 class="text-xl font-semibold sidebar-text">Dashboard</h2>
+                <h2 class="text-xl font-semibold sidebar-text">HSMAH</h2>
                     <button id="collapseBtn" aria-label="Toggle sidebar" class="p-1 rounded hover:bg-gray-300 dark:hover:bg-gray-700">
                         <svg class="w-6 h-6 sidebar-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="3" y1="12" x2="21" y2="12" />
@@ -41,18 +43,22 @@
 
             <nav class="flex flex-col space-y-2">
                 <a href="{{ route('sales') }}"
-                    class="sidebar-text hover:text-yellow-400 bg-gray-900 p-5 rounded
+                    class="sidebar-text hover:text-yellow-400 bg-gray-900 p-2 rounded-full text-center
                     {{ request()->routeIs('sales') 
                     ? 'text-yellow-400 font-bold dark:text-yellow-300' : 'text-white dark:text-yellow-400' }}">
                     Real-time Monitoring
                 </a>
-                <a href="{{ route('hypercare') }}" class="sidebar-text hover:text-yellow-400 bg-gray-900 p-5 rounded {{ request()->routeIs('hypercare') ? 'text-yellow-400   font-bold dark:text-yellow-300' : 'text-white dark:text-yellow-400' }}">
+                <a href="{{ route('hypercare') }}" class="rounded-full text-center sidebar-text hover:text-yellow-400 bg-gray-900 p-2 rounded {{ request()->routeIs('hypercare') ? 'text-yellow-400   font-bold dark:text-yellow-300' : 'text-white dark:text-yellow-400' }}">
                     Hypercare
+                </a>
+
+                <a href="{{ route('hourly_data') }}" class="rounded-full text-center sidebar-text hover:text-yellow-400 bg-gray-900 p-2 rounded {{ request()->routeIs('hourly_data') ? 'text-yellow-400   font-bold dark:text-yellow-300' : 'text-white dark:text-yellow-400' }}">
+                    Hourly Data
                 </a>
                 
             </nav>
 
-            <div class="flex items-center gap-2 mt-auto">
+            {{-- <div class="flex items-center gap-2 mt-auto">
                 <button id="darkModeToggle"
                     class="relative w-14 h-8 bg-gray-300 dark:bg-gray-600 rounded-full p-1 focus:outline-none transition-colors duration-300">
     
@@ -61,7 +67,7 @@
                         🌞
                     </span>
                 </button>
-            </div>
+            </div> --}}
         </aside>
 
         <main class="flex-1 p-6 overflow-y-auto">
