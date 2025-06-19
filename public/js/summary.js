@@ -59,8 +59,18 @@ function renderSummary() {
         const parseHour = (timeStr) => {
             const hour = parseInt(timeStr, 10);
             const isPM = timeStr.toUpperCase().includes('PM');
-            if (hour === 12) return isPM ? 12 : 0;
-            return isPM ? hour + 12 : hour;
+            const isAM = timeStr.toUpperCase().includes('AM');
+
+            if (hour === 12) {
+                if (isAM) return 0;      
+                if (isPM) return 12;     
+            }
+
+            let converted = isPM ? hour + 12 : hour;
+
+            if (timeStr.trim().toUpperCase() === '12AM') return 24;
+
+            return converted;
         };
 
         const isFutureRange = (range) => {
@@ -135,11 +145,12 @@ function renderSummary() {
         html += `<td class="border px-2 py-1 font-bold">${comboTodayTotal}</td></tr>`;
 
         html += `<tr class="border-t-2"><td class="border px-2 py-1 text-gray-500 italic">Benchmark</td>`;
-
         timeRanges.forEach(range => {
             const isFuture = isFutureRange(range);
-            html += `<td class="border px-2 py-1 text-left" colspan="2">${isFuture ? '—' : comboPrev[range]}</td>`;
+            const val = comboPrev[range] || 0;
+            html += `<td class="border px-2 py-1 text-left" colspan="2">${isFuture ? '—' : val}</td>`;
         });
+
         html += `<td class="border px-2 py-1 text-left" colspan="2">${comboPrevTotal}</td></tr>`;
 
         html += `<tr><td class="border px-2 py-1 text-gray-500 italic">Alert below 50% of Benchmark</td>`;
@@ -163,9 +174,8 @@ function renderSummary() {
         timeRanges.forEach(range => {
             const isFuture = isFutureRange(range);
             const val = comboPrev[range] || 0;
-            html += `<td class="border px-2 py-1 text-left" colspan="2">${isFuture ? '—' : (val / 2).toFixed(1)}</td>`;
+            html += `<td class="border px-2 py-1 text-left" colspan="2">${isFuture ? '—' : (val / 2).toFixed(0)}</td>`;
         });
-        html += `<td class="border px-2 py-1 text-left" colspan="2">${(comboPrevTotal / 2).toFixed(1)}</td></tr>`;
 
         preferredOrder.forEach(channel => {
             if (comboChannels.includes(channel)) return;
@@ -202,10 +212,11 @@ function renderSummary() {
 
             html += `<tr><td class="border px-2 py-1 text-gray-500 italic">Benchmark</td>`;
             timeRanges.forEach(range => {
-                const value = prevData[channel]?.[range] || 0;
                 const isFuture = isFutureRange(range);
+                const value = prevData[channel]?.[range] || 0;
                 html += `<td class="border px-2 py-1 text-left" colspan="2">${isFuture ? '—' : value}</td>`;
             });
+
             html += `<td class="border px-2 py-1 text-left" colspan="2">${totalPrev}</td></tr>`;
 
            html += `<tr><td class="border px-2 py-1 text-gray-500 italic">Alert below 50% of Benchmark</td>`;
@@ -225,13 +236,12 @@ function renderSummary() {
 
 
             html += `<tr><td class="border px-2 py-1 text-gray-500 italic">50% of Benchmark</td>`;
-            timeRanges.forEach(range => {
-                const val = (prevData[channel]?.[range] || 0) / 2;
-                const isFuture = isFutureRange(range);
-                html += `<td class="border px-2 py-1 text-left" colspan="2">${isFuture ? '—' : val.toFixed(1)}</td>`;
+                timeRanges.forEach(range => {
+                    const isFuture = isFutureRange(range);
+                    const val = isFuture ? 0 : (prevData[channel]?.[range] || 0) / 2;
+                    html += `<td class="border px-2 py-1 text-left" colspan="2">${isFuture ? '—' : val.toFixed(0)}</td>`;
+                });
             });
-            html += `<td class="border px-2 py-1 text-left" colspan="2">${(totalPrev / 2).toFixed(1)}</td></tr>`;
-        });
 
         html += `</tbody></table>`;
         container.innerHTML = html;

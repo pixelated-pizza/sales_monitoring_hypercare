@@ -62,7 +62,6 @@ class PastDataController extends Controller
                 if (!isset($order['SalesChannel'], $order['DatePlaced'], $order['OrderLine'])) continue;
 
             
-
                 $datePlaced = Carbon::parse($order['DatePlaced'])->addHours(10);
                 $hour = (int) $datePlaced->format('H');
 

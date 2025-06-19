@@ -27,56 +27,60 @@
         @endif
     </head>
     <body class="h-full bg-gray-300 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors">
-        
+       
          <div class="flex h-screen">
-         <aside id="sidebar" class="sidebar w-64 bg-gray-100 dark:bg-gray-800 p-4 flex flex-col border border-black">
-            <div class="flex items-center justify-between mb-6">
-                <h2 class="text-xl font-semibold sidebar-text">HSMAH</h2>
-                    <button id="collapseBtn" aria-label="Toggle sidebar" class="p-1 rounded hover:bg-gray-300 dark:hover:bg-gray-700">
-                        <svg class="w-6 h-6 sidebar-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="3" y1="12" x2="21" y2="12" />
-                            <line x1="3" y1="6" x2="21" y2="6" />
-                            <line x1="3" y1="18" x2="21" y2="18" />
-                        </svg>
-                    </button>
-            </div>
-
-            <nav class="flex flex-col space-y-2">
-                <a href="{{ route('sales') }}"
-                    class="sidebar-text hover:text-yellow-400 bg-gray-900 p-2 rounded-full text-center
-                    {{ request()->routeIs('sales') 
-                    ? 'text-yellow-400 font-bold dark:text-yellow-300' : 'text-white dark:text-yellow-400' }}">
-                    Real-time Monitoring
-                </a>
-                <a href="{{ route('hypercare') }}" class="rounded-full text-center sidebar-text hover:text-yellow-400 bg-gray-900 p-2 rounded {{ request()->routeIs('hypercare') ? 'text-yellow-400   font-bold dark:text-yellow-300' : 'text-white dark:text-yellow-400' }}">
-                    Hypercare
-                </a>
-
-                <a href="{{ route('hourly_data') }}" class="rounded-full text-center sidebar-text hover:text-yellow-400 bg-gray-900 p-2 rounded {{ request()->routeIs('hourly_data') ? 'text-yellow-400   font-bold dark:text-yellow-300' : 'text-white dark:text-yellow-400' }}">
-                    Hourly Data
-                </a>
-                
-            </nav>
-
-            {{-- <div class="flex items-center gap-2 mt-auto">
-                <button id="darkModeToggle"
-                    class="relative w-14 h-8 bg-gray-300 dark:bg-gray-600 rounded-full p-1 focus:outline-none transition-colors duration-300">
+            
+         <aside id="sidebar" class="sidebar w-64 bg-gray-100 dark:bg-gray-800 p-4 flex flex-col justify-between border border-black">
     
-                    <span id="toggleThumb"
-                        class="toggle-thumb absolute top-1 left-1 w-6 h-6 rounded-full shadow-md flex items-center justify-center text-yellow-400 dark:text-gray-300 bg-white dark:bg-gray-800 transition-transform">
-                        🌞
-                    </span>
-                </button>
-            </div> --}}
-        </aside>
+    <div>
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-xl font-semibold sidebar-text">HSMAH</h2>
+            <button id="collapseBtn" aria-label="Toggle sidebar" class="p-1 rounded hover:bg-gray-300 dark:hover:bg-gray-700">
+                <svg class="w-6 h-6 sidebar-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="3" y1="12" x2="21" y2="12" />
+                    <line x1="3" y1="6" x2="21" y2="6" />
+                    <line x1="3" y1="18" x2="21" y2="18" />
+                </svg>
+            </button>
+        </div>
 
+        <nav class="flex flex-col space-y-2">
+        <a href="{{ route('sales') }}"
+            class="flex items-center gap-2 text-sm justify-start px-4 py-2 hover:text-gray-800 
+            {{ request()->routeIs('sales') ? 'font-bold dark:text-yellow-300' : 'text-black dark:text-yellow-400' }}">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 12l2-2 4 4 8-8 4 4" />
+            </svg>
+            Real-time Monitoring
+        </a>
+
+        <a href="{{ route('hypercare') }}"
+            class="flex items-center test-sm gap-2 justify-start px-4 py-2 hover:text-gray-800 
+            {{ request()->routeIs('hypercare') ? 'font-bold dark:text-yellow-300' : 'text-black dark:text-yellow-400' }}">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M13 16h-1v-4h-1m0-4h.01M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z" />
+            </svg>
+            Hypercare
+        </a>
+    </nav>
+    </div>
+
+    <div id="weather-forecast" class="sidebar-text mt-6 text-sm text-center p-3 text-gray-800 dark:text-gray-100 rounded-md shadow-inner">
+        <span>Loading weather...</span>
+    </div>
+</aside>
+
+        
         <main class="flex-1 p-6 overflow-y-auto">
             @yield('content')
         </main>
+        
     </div>
     <script src="{{ asset('js/summary.js') }}"></script>
     <script src="{{ asset('js/last_two_weeks.js') }}"></script>
     <script src="{{ asset('js/app.js') }}"></script>
-        
+    <script src="{{ asset('js/weather.js') }}"></script>
     </body>
 </html>

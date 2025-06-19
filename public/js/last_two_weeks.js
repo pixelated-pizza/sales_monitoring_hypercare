@@ -3,8 +3,14 @@ let selectedPastDate = null;
 function renderPast(selectedDate = null) {
     const container = document.getElementById('past-sales');
     const loadingElem = document.getElementById('load-past');
+    const loadingChart = document.getElementById('chartLoading');
+    const chart = document.getElementById('pastLineChart');
+
 
     loadingElem.style.display = 'block';
+    loadingChart.style.display = 'block';
+    document.getElementById('lineChartWrapper').style.display = 'none'; 
+    chart.getContext('2d').clearRect(0, 0, chart.width, chart.height); 
     container.innerHTML = '';
 
     const params = selectedDate ? {
@@ -182,12 +188,11 @@ function renderPast(selectedDate = null) {
                             label: channelKey === 'combo' ? 'Website Orders' : `${channelKey} Orders`,
                             data: salesToday,
                             borderColor: '#007bff',
-                            backgroundColor: 'rgba(0, 123, 255, 0.2)',
                             tension: 0,
                             pointBackgroundColor: '#007bff',
                             pointBorderColor: '#007bff',
-                            fill: true, 
-                            order: 3,
+                            fill: false, 
+                            order: 1,
                             datalabels: {
                                 align: 'top',
                                 anchor: 'end',
@@ -204,37 +209,37 @@ function renderPast(selectedDate = null) {
 
                         {
                             label: '30% of Benchmark',
-                            data: salesPrev.map(v => v * 0.3),
+                            data: salesPrev.map(v => v * 0.5),
                             borderWidth: 1,
                             pointRadius: 0,
                             borderColor: 'red',
                             borderDash: [5, 5],
-                            borderColor: 'rgba(255,0,0,0.3)',
+                            borderColor: 'rgba(255,0,0,1)',
                             fill: {
                                 target: 'origin',
-                                above: 'rgba(255, 140, 0)',
-                                below: 'rgba(255, 140, 0)',
+                                above: 'rgba(250, 128, 114)',
+                                below: 'rgba(250, 128, 114)',
                             },
-                            backgroundColor: 'rgba(255, 140, 0, 0.3)',
+                            backgroundColor: 'rgba(250, 128, 114, 1)',
                             type: 'line',
                             tension: 0,
-                            order: 1,
+                            order: 2,
                         },
 
                         {
                             label: channelKey === 'combo' ? 'Website Benchmark' : `${channelKey} Benchmark`,
                             data: salesPrev,
                             borderColor: 'orange',
-                            backgroundColor: 'rgba(255,165,0,0,0.2)',
+                            backgroundColor: 'rgba(255, 213, 128,1)',
                             fill: {
                                 target: 'origin',
-                                above: 'rgba(255,165,0,0.2)',
-                                below: 'rgba(255,165,0,0.2)',
+                                above: 'rgba(255,213, 128,1)',
+                                below: 'rgba(255,213, 128,1)',
                             },
                             tension: 0,
                             pointBackgroundColor: 'orange',
                             pointBorderColor: 'orange',
-                            order: 2,
+                            order: 3,
                         },
 
                         {
@@ -247,7 +252,7 @@ function renderPast(selectedDate = null) {
                             type: 'line',
                             showLine: false,
                             fill: false,
-                            order: 4,
+                            order: 0,
                         }
                     ]
 
@@ -300,12 +305,15 @@ function renderPast(selectedDate = null) {
             });
 
             document.getElementById('chartLoading').style.display = 'none';
+            
             document.getElementById('lineChartWrapper').style.display = 'block';
         }
 
 
 
         document.getElementById('channelSelect').addEventListener('change', function () {
+            loadingChart.style.display = 'block';
+            document.getElementById('lineChartWrapper').style.display = 'none';
             renderLineChart(this.value);
         });
 
