@@ -38,12 +38,11 @@
             </div>
         </div>
         <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border border-gray-900 dark:border-gray-700 mb-8 ">
-
+            
             <div id="load-past" class="hidden text-center my-4">
                 <div class="spinner inline-block align-middle mr-2"></div>
                 <span class="align-middle text-gray-700 dark:text-gray-200">Loading...</span>
             </div>
-
             <div id="past-sales" class="overflow-auto mt-4"></div>
         </div>
     </section>

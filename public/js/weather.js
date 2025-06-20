@@ -1,11 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
     const weatherBox = document.getElementById('weather-forecast');
 
-    fetch('https://api.open-meteo.com/v1/forecast?latitude=7.1907&longitude=125.4553&current=temperature_2m,weathercode&timezone=auto')
+    fetch('https://api.open-meteo.com/v1/forecast?latitude=7.1907&longitude=125.4553&hourly=temperature_2m,weathercode&timezone=auto')
         .then(res => res.json())
         .then(data => {
-            const temp = data.current.temperature_2m;
-            const code = data.current.weathercode;
+            const hours = data.hourly.time;
+            const temps = data.hourly.temperature_2m;
+            const codes = data.hourly.weathercode;
+
+            const now = new Date();
 
             const conditions = {
                 0: 'Clear Skies ☀️',
@@ -30,18 +33,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 99: 'Severe Thunderstorm 🌩️'
             };
 
+            let nextHourHTML = '';
+            for (let i = 0; i < hours.length; i++) {
+                const forecastTime = new Date(hours[i]);
+                if (forecastTime > now) {
+                    const timeStr = forecastTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+                    const temp = temps[i];
+                    const code = codes[i];
+                    const condition = conditions[code] || 'Unknown';
 
-            weatherBox.innerHTML = `
-                <div class="bg-gray-900 text-white dark:bg-gray-800 dark:text-white p-4 rounded-lg shadow-md w-full">
-                    <div class="text-xs uppercase tracking-wide text-gray-400 mb-1">Davao City, Philippines</div>
-                    <div class="mt-1 text-md font-bold">${conditions[code] || '—'}</div>
-                    <div class="text-lg font-extrabold mt-1">${temp}°C</div>
-                </div>
-            `;
+                    nextHourHTML = `
+                        <div class="bg-gray-900 text-white dark:bg-gray-800 dark:text-white p-4 rounded-lg shadow-md w-full">
+                            <div class="text-sm text-gray-300 mb-1">Davao City, Philippines</div>
+                            <div class="text-md font-bold mb-1">${condition}</div>
+                            <div class="text-lg font-extrabold mb-1">${temp}°C</div>
+                            <div class="text-xs text-gray-400">Forecast for ${timeStr}</div>
+                        </div>
+                    `;
+                    break; 
+                }
+            }
 
-
+            weatherBox.innerHTML = nextHourHTML || 'No forecast data available for the next hour.';
         })
         .catch(() => {
-            weatherBox.innerHTML = 'Unable to load weather 🌧️';
+            weatherBox.innerHTML = 'Unable to load forecast 🌧️';
         });
 });

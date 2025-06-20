@@ -1,14 +1,12 @@
 let hasLoaded = false;
 function renderSummary() {
     const loadingElem = document.getElementById('loading');
-     const container = document.getElementById('summary-report');
+    const container = document.getElementById('summary-report');
 
-    if(!hasLoaded){
+    if (!hasLoaded) {
         loadingElem.style.display = 'block';
-        container.innerHTML = '';    
+        container.innerHTML = '';
     }
-
-
 
     Promise.all([
         axios.get('/api/today-sales'),
@@ -29,9 +27,6 @@ function renderSummary() {
         ];
 
         const preferredOrder = ["Edisons", "Mytopia", "eBay", "BigW", "Mydeals", "Kogan", "Bunnings"];
-        const container = document.getElementById('summary-report');
-        
-
         const now = new Date();
         const lastWeekOfToday = new Date(now);
         lastWeekOfToday.setDate(lastWeekOfToday.getDate() - 7);
@@ -41,9 +36,8 @@ function renderSummary() {
             return d.toLocaleDateString(undefined, options);
         };
 
-        var html = `<div class="mb-2 font-semibold text-gray-700">Sales Data: ${formatDate(now)} versus ${formatDate(lastWeekOfToday)}(Benchmark)</div>`;
-
-        html += `<div class="mb-2 font-semibold text-gray-700"><i><b>Note: </b> Benchmark values refers to the data of the same weekday from the previous week (${formatDate(lastWeekOfToday)})</i></div>`;
+        let html = `<div class="mb-2 font-semibold text-gray-700">Sales Data: ${formatDate(now)} versus ${formatDate(lastWeekOfToday)} (Benchmark)</div>`;
+        html += `<div class="mb-2 font-semibold text-gray-700"><i><b>Note:</b> Benchmark values refer to the same weekday from the previous week (${formatDate(lastWeekOfToday)})</i></div>`;
 
         const getPercentDiff = (sales, benchmark) => {
             if (benchmark === 0) {
@@ -61,196 +55,160 @@ function renderSummary() {
             const isPM = timeStr.toUpperCase().includes('PM');
             const isAM = timeStr.toUpperCase().includes('AM');
 
-            if (hour === 12) {
-                if (isAM) return 0;      
-                if (isPM) return 12;     
-            }
-
-            let converted = isPM ? hour + 12 : hour;
-
             if (timeStr.trim().toUpperCase() === '12AM') return 24;
+            if (timeStr.trim().toUpperCase() === '12PM') return 12;
 
-            return converted;
+            return isPM ? hour + 12 : hour;
         };
+
 
         const isFutureRange = (range) => {
-            const now = new Date();
-            const currentHour = now.getHours();
-            const endTimeStr = range.split(' - ')[1].trim();
-            const endHour24 = parseHour(endTimeStr);
-            return currentHour < endHour24;
+            const currentHour = new Date().getHours();
+            let endHour = parseHour(range.split(' - ')[1].trim());
+            if (endHour === 24) {
+                return !(currentHour >= 22 && currentHour < 24);
+            }
+
+            return currentHour < endHour;
         };
 
-        const allTimeRangesCompleted = () => {
-            return timeRanges.every(range => !isFutureRange(range));
-        };
 
-        html += `
-            <div class="overflow-auto max-w-full">
-            <table class="min-w-full border border-gray-300 text-sm text-left text-gray-700">
-            <thead class="bg-blue-50 sticky top-0 z-10">
-            <tr>
-            <th class="px-2 py-1 bg-blue-100">Sales Channel</th>`;
+        const allTimeRangesCompleted = () => timeRanges.every(range => !isFutureRange(range));
+
+        html += `<div class="overflow-auto max-w-full"><table class="min-w-full border border-gray-300 text-sm text-left text-gray-700"><thead class="bg-blue-50 sticky top-0 z-10"><tr><th class="px-2 py-1 bg-blue-100">Sales Channel</th>`;
+
         timeRanges.forEach(range => {
-            html += `
-                <th class="px-2 py-1 bg-cyan-100 text-xs" style="background-color: #00FFFF;">${range}</th>
-                    <th class="border px-2 py-1 bg-cyan-50 text-xs">% Diff</th>`;
+            html += `<th class="px-2 py-1 bg-cyan-100 text-xs" style="background-color: #00FFFF;">${range}</th><th class="border px-2 py-1 bg-cyan-50 text-xs">% Diff</th>`;
         });
-        html += `<th class="border px-2 py-1">TOTAL</th></tr>
-      </thead><tbody>`;
+        html += `</tr></thead><tbody>`;
 
         const comboChannels = ["Edisons", "Mytopia"];
-        let comboTodayTotal = 0;
-        let comboPrevTotal = 0;
         const comboToday = {};
         const comboPrev = {};
 
         comboChannels.forEach(channel => {
             let row = `<tr class="even:bg-gray-50" style="border: 2px solid black;"><td class="border px-2 py-1 font-semibold">${channel}</td>`;
-
             timeRanges.forEach(range => {
                 const future = isFutureRange(range);
                 const today = todayData[channel]?.[range] || 0;
                 const prev = prevData[channel]?.[range] || 0;
-                const isAlert = !future && prev > 0 && today < prev * 0.5;
-
-                if (isAlert) comboAlert = true;
-
                 row += `<td class="border px-2 py-1 text-left ${future ? 'text-gray-400' : ''}">${future ? '—' : today}</td>`;
                 row += `<td class="border px-2 py-1 text-left text-gray-400">—</td>`;
-
                 comboToday[range] = (comboToday[range] || 0) + today;
                 comboPrev[range] = (comboPrev[range] || 0) + prev;
-                comboTodayTotal += today;
-                comboPrevTotal += prev;
             });
-
-            row += `<td class="border px-2 py-1 font-bold">—</td><td class="border px-2 py-1">—</td></tr>`;
+            row += `</tr>`;
             html += row;
         });
 
         html += `<tr class="bg-gray-200" style="border: 2px solid black;"><td class="px-2 py-1 font-bold">TOTAL (Edisons + Mytopia)</td>`;
-
         timeRanges.forEach(range => {
             const today = comboToday[range] || 0;
             const prev = comboPrev[range] || 0;
             const future = isFutureRange(range);
             const diff = getPercentDiff(today, prev);
-            const colorClass = today < prev * 0.5 ? 'text-red-700 font-extrabold' : 'text-green-500 font-bold';
+            const colorClass = today < prev * 0.5 ? 'text-red-700 font-extrabold glow-red' : 'text-green-500 font-bold glow-green';
 
             html += `<td class="border px-2 py-1 text-left ${future ? 'text-gray-400' : ''}">${future ? '—' : today}</td>`;
-            html += `<td class="border px-2 py-1 text-left ${future ? 'text-gray-400' : colorClass}">${future ? '—' : diff}</td>`;
+            html += `<td class="border px-2 py-1 text-left ${future ? 'text-gray-400' : colorClass} ${future ? '' : 'glow-pulse'}">${future ? '—' : diff}</td>`;
         });
-
-        html += `<td class="border px-2 py-1 font-bold">${comboTodayTotal}</td></tr>`;
+        html += `</tr>`;
 
         html += `<tr class="border-t-2"><td class="border px-2 py-1 text-gray-500 italic">Benchmark</td>`;
         timeRanges.forEach(range => {
-            const isFuture = isFutureRange(range);
             const val = comboPrev[range] || 0;
-            html += `<td class="border px-2 py-1 text-left" colspan="2">${isFuture ? '—' : val}</td>`;
+            html += `<td class="border px-2 py-1 text-left" colspan="2">${isFutureRange(range) ? '—' : val}</td>`;
         });
-
-        html += `<td class="border px-2 py-1 text-left" colspan="2">${comboPrevTotal}</td></tr>`;
+        html += `</tr>`;
 
         html += `<tr><td class="border px-2 py-1 text-gray-500 italic">Alert below 50% of Benchmark</td>`;
-        if (allTimeRangesCompleted()) {
-            timeRanges.forEach(range => {
-            const today = todayData[channel]?.[range] || 0;
-            const prev = prevData[channel]?.[range] || 0;
-            const isRedFlag = prev > 0 && today < prev * 0.5;
-            html += `<td class="border px-2 py-1 text-center font-bold text-red-700" colspan="2">${isRedFlag ? '🚩' : ''}</td>`;
-        });
-        } else {
-            timeRanges.forEach(() => {
+        timeRanges.forEach(range => {
+            if (allTimeRangesCompleted()) {
+                const today = comboToday[range] || 0;
+                const prev = comboPrev[range] || 0;
+                const isRedFlag = prev > 0 && today < prev * 0.5;
+                html += `<td class="border px-2 py-1 text-center font-bold text-red-700" colspan="2">${isRedFlag ? '🚩' : ''}</td>`;
+            } else {
                 html += `<td class="border px-2 py-1 text-center" colspan="2">—</td>`;
-            });
-        }
-        html += `<td class="border px-2 py-1 text-center bg-gray-100" colspan="2">—</td>`;
-
-
+            }
+        });
+        html += `</tr>`;
 
         html += `<tr><td class="border px-2 py-1 text-gray-500 italic">50% of Benchmark</td>`;
         timeRanges.forEach(range => {
-            const isFuture = isFutureRange(range);
             const val = comboPrev[range] || 0;
-            html += `<td class="border px-2 py-1 text-left" colspan="2">${isFuture ? '—' : (val / 2).toFixed(0)}</td>`;
+            html += `<td class="border px-2 py-1 text-left" colspan="2">${isFutureRange(range) ? '—' : (val / 2).toFixed(0)}</td>`;
         });
+        html += `</tr>`;
 
         preferredOrder.forEach(channel => {
             if (comboChannels.includes(channel)) return;
             if (!todayData[channel] && !prevData[channel]) return;
 
-            let totalToday = 0;
-            let totalPrev = 0;
-            let alert = false;
-
             let row = `<tr class="bg-gray-200" style="border: 2px solid black;"><td class="border px-2 py-1 font-bold">${channel}</td>`;
-
             timeRanges.forEach(range => {
                 const future = isFutureRange(range);
                 const today = todayData[channel]?.[range] || 0;
                 const prev = prevData[channel]?.[range] || 0;
                 const diff = getPercentDiff(today, prev);
-                const isAlert = !future && prev > 0 && today < prev * 0.5;
+                const colorClass = today < prev * 0.5 ? 'text-red-700 font-extrabold glow-red': 'text-green-500 font-bold glow-green';
 
-                if (!future) {
-                    let colorClass = today < prev * 0.5 ? 'text-red-700 font-extrabold' : 'text-green-500 font-bold';
-                    row += `<td class="border px-2 py-1 text-left">${today}</td>`;
-                    row += `<td class="border px-2 py-1 text-left ${colorClass}">${diff}</td>`;
-                    if (isAlert) alert = true;
-                } else {
-                    row += `<td class="border px-2 py-1 text-left text-gray-400">—</td><td class="border px-2 py-1 text-left text-gray-400">—</td>`;
-                }
+                row += `<td class="border px-2 py-1 text-left ${future ? 'text-gray-400' : ''}">${future ? '—' : today}</td>`;
+                row += `<td class="border px-2 py-1 text-left ${future ? 'text-gray-400' : colorClass} ${future ? '' : 'glow-pulse'}">${future ? '—' : diff}</td>`;
 
-                totalToday += today;
-                totalPrev += prev;
             });
-
-            row += `<td class="border px-2 py-1 font-bold">${totalToday}</td></tr>`;
+            row += `</tr>`;
             html += row;
 
             html += `<tr><td class="border px-2 py-1 text-gray-500 italic">Benchmark</td>`;
             timeRanges.forEach(range => {
-                const isFuture = isFutureRange(range);
-                const value = prevData[channel]?.[range] || 0;
-                html += `<td class="border px-2 py-1 text-left" colspan="2">${isFuture ? '—' : value}</td>`;
+                const val = prevData[channel]?.[range] || 0;
+                html += `<td class="border px-2 py-1 text-left" colspan="2">${isFutureRange(range) ? '—' : val}</td>`;
             });
+            html += `</tr>`;
 
-            html += `<td class="border px-2 py-1 text-left" colspan="2">${totalPrev}</td></tr>`;
-
-           html += `<tr><td class="border px-2 py-1 text-gray-500 italic">Alert below 50% of Benchmark</td>`;
-           if (allTimeRangesCompleted()) {
-                timeRanges.forEach(range => {
+            html += `<tr><td class="border px-2 py-1 text-gray-500 italic">Alert below 50% of Benchmark</td>`;
+            timeRanges.forEach(range => {
+                if (allTimeRangesCompleted()) {
                     const today = todayData[channel]?.[range] || 0;
                     const prev = prevData[channel]?.[range] || 0;
                     const isRedFlag = prev > 0 && today < prev * 0.5;
                     html += `<td class="border px-2 py-1 text-center font-bold text-red-700" colspan="2">${isRedFlag ? '🚩' : '—'}</td>`;
-                });
-            } else {
-                timeRanges.forEach(() => {
+                } else {
                     html += `<td class="border px-2 py-1 text-center" colspan="2">—</td>`;
-                });
-            }
-            html += `<td class="border px-2 py-1 text-center bg-gray-100" colspan="2">—</td>`;
-
+                }
+            });
+            html += `</tr>`;
 
             html += `<tr><td class="border px-2 py-1 text-gray-500 italic">50% of Benchmark</td>`;
-                timeRanges.forEach(range => {
-                    const isFuture = isFutureRange(range);
-                    const val = isFuture ? 0 : (prevData[channel]?.[range] || 0) / 2;
-                    html += `<td class="border px-2 py-1 text-left" colspan="2">${isFuture ? '—' : val.toFixed(0)}</td>`;
-                });
+            timeRanges.forEach(range => {
+                const val = prevData[channel]?.[range] || 0;
+                html += `<td class="border px-2 py-1 text-left" colspan="2">${isFutureRange(range) ? '—' : (val / 2).toFixed(0)}</td>`;
             });
+            html += `</tr>`;
+        });
 
-        html += `</tbody></table>`;
+        html += `</tbody></table></div>`;
         container.innerHTML = html;
+
+        const updatedAt = new Date();
+        document.getElementById('last-updated').textContent = 'Updated just now';
+
+        if (window.updateTimer) clearInterval(window.updateTimer);
+            window.updateTimer = setInterval(() => {
+            const now = new Date();
+            const minutesAgo = Math.floor((now - updatedAt) / 60000);
+            document.getElementById('last-updated').textContent =
+            minutesAgo < 1 ? 'Updated just now' : `Updated ${minutesAgo} min${minutesAgo > 1 ? 's' : ''} ago`;
+        }, 30000); 
+
     }).catch(err => {
-        loadingElem.style.display = 'none';  
+        loadingElem.style.display = 'none';
         container.innerHTML = `<div class="text-red-600">Failed to load summary report.</div>`;
         console.error('Failed to load summary report:', err);
     });
 }
+
 
 const getRefreshIntervalSummary = () => {
     const now = new Date();
