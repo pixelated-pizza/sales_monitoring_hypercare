@@ -46,7 +46,7 @@
 
         <nav class="flex flex-col space-y-2">
         <a href="{{ route('sales') }}"
-            class="flex items-center gap-2 text-sm justify-start px-4 py-2 hover:text-gray-800 
+            class="sidebar-text flex items-center gap-2 text-sm justify-start px-4 py-2 hover:text-gray-800 
             {{ request()->routeIs('sales') ? 'font-bold dark:text-yellow-300' : 'text-black dark:text-yellow-400' }}">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
                 viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
@@ -56,7 +56,7 @@
         </a>
 
         <a href="{{ route('hypercare') }}"
-            class="flex items-center test-sm gap-2 justify-start px-4 py-2 hover:text-gray-800 
+            class="sidebar-text flex items-center test-sm gap-2 justify-start px-4 py-2 hover:text-gray-800 
             {{ request()->routeIs('hypercare') ? 'font-bold dark:text-yellow-300' : 'text-black dark:text-yellow-400' }}">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
                 viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">

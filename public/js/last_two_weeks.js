@@ -176,8 +176,32 @@ function renderPast(selectedDate = null) {
 
             const salesToday = getSalesData(todayData, channelKey);
             const salesPrev = getSalesData(prevData, channelKey);
-            const fillRedArea = salesPrev.map((v, i) => Math.max(v, v * 0.3));
-            const below30Flags = salesToday.map((v, i) => (salesPrev[i] > 0 && v < salesPrev[i] * 0.3 ? v : null));
+            const below30Flags = salesToday.map((v, i) => (salesPrev[i] > 0 && v <= salesPrev[i] * 0.3 ? v : null));
+
+            const redFlagPlugin = {
+                id: 'redFlagEmoji',
+                afterDatasetsDraw(chart) {
+                    const datasetIndex = chart.data.datasets.findIndex(d => d.label === 'Alert Data');
+
+                    if (datasetIndex === -1) return;
+
+                    const meta = chart.getDatasetMeta(datasetIndex);
+                    const ctx = chart.ctx;
+
+                    meta.data.forEach((point, index) => {
+                        const val = chart.data.datasets[datasetIndex].data[index];
+                        if (val != null) {
+                            ctx.save();
+                            ctx.font = '18px Segoe UI Emoji'; 
+                            ctx.textAlign = 'center';        
+                            ctx.textBaseline = 'bottom';      
+                            ctx.fillText('🚩', point.x + 5, point.y - 32); 
+                            ctx.restore();
+                        }
+                    });
+                }
+            };
+
 
             window.pastChartInstance = new Chart(ctx, {
                 type: 'line',
@@ -245,14 +269,15 @@ function renderPast(selectedDate = null) {
                         {
                             label: 'Alert Data',
                             data: below30Flags,
-                            pointStyle: 'triangle',
-                            pointRadius: 10,
-                            pointBackgroundColor: 'red',
+                            pointRadius: 0, 
+                            pointHoverRadius: 0,
                             borderWidth: 0,
-                            type: 'line',
                             showLine: false,
                             fill: false,
+                            type: 'line',
                             order: 0,
+                            pointBackgroundColor: 'transparent', 
+                            pointBorderColor: 'transparent'
                         }
                     ]
 
@@ -301,7 +326,7 @@ function renderPast(selectedDate = null) {
                         }
                     }
                 },
-                plugins: [ChartDataLabels]
+                plugins: [ChartDataLabels, redFlagPlugin]
             });
 
             document.getElementById('chartLoading').style.display = 'none';

@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
             for (let i = 0; i < hours.length; i++) {
                 const forecastTime = new Date(hours[i]);
                 if (forecastTime > now) {
-                    const timeStr = forecastTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+                    const timeStr = forecastTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'Asia/Manila' });
                     const temp = temps[i];
                     const code = codes[i];
                     const condition = conditions[code] || 'Unknown';
