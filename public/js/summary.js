@@ -92,7 +92,7 @@ function renderSummary() {
                 const future = isFutureRange(range);
                 const today = todayData[channel]?.[range] || 0;
                 const prev = prevData[channel]?.[range] || 0;
-                row += `<td class="border px-2 py-1 text-left ${future ? 'text-gray-400' : ''}">${future ? '—' : today}</td>`;
+                row += `<td class="border px-2 py-1 text-left ${future ? 'text-gray-400' : 'glow-pulse'}">${future ? '—' : today}</td>`;
                 row += `<td class="border px-2 py-1 text-left text-gray-400">—</td>`;
                 comboToday[range] = (comboToday[range] || 0) + today;
                 comboPrev[range] = (comboPrev[range] || 0) + prev;
@@ -107,10 +107,10 @@ function renderSummary() {
             const prev = comboPrev[range] || 0;
             const future = isFutureRange(range);
             const diff = getPercentDiff(today, prev);
-            const colorClass = today < prev * 0.5 ? 'text-red-700 font-extrabold glow-red' : 'text-green-500 font-bold glow-green';
+            const colorClass = today < prev * 0.5 ? 'text-red-700 font-extrabold' : 'text-green-500 font-bold';
 
-            html += `<td class="border px-2 py-1 text-left ${future ? 'text-gray-400' : ''}">${future ? '—' : today}</td>`;
-            html += `<td class="border px-2 py-1 text-left ${future ? 'text-gray-400' : colorClass} ${future ? '' : 'glow-pulse'}">${future ? '—' : diff}</td>`;
+            html += `<td class="border px-2 py-1 text-left ${future ? 'text-gray-400' : 'glow-pulse'}">${future ? '—' : today}</td>`;
+            html += `<td class="border px-2 py-1 text-left ${future ? 'text-gray-400' : colorClass} ${future ? '' : ''}">${future ? '—' : diff}</td>`;
         });
         html += `</tr>`;
 
@@ -151,10 +151,10 @@ function renderSummary() {
                 const today = todayData[channel]?.[range] || 0;
                 const prev = prevData[channel]?.[range] || 0;
                 const diff = getPercentDiff(today, prev);
-                const colorClass = today < prev * 0.5 ? 'text-red-700 font-extrabold glow-red': 'text-green-500 font-bold glow-green';
+                const colorClass = today < prev * 0.5 ? 'text-red-700 font-extrabold': 'text-green-500 font-bold';
 
-                row += `<td class="border px-2 py-1 text-left ${future ? 'text-gray-400' : ''}">${future ? '—' : today}</td>`;
-                row += `<td class="border px-2 py-1 text-left ${future ? 'text-gray-400' : colorClass} ${future ? '' : 'glow-pulse'}">${future ? '—' : diff}</td>`;
+                row += `<td class="border px-2 py-1 text-left ${future ? 'text-gray-400' : 'glow-pulse'}">${future ? '—' : today}</td>`;
+                row += `<td class="border px-2 py-1 text-left ${future ? 'text-gray-400' : colorClass} ${future ? '' : ''}">${future ? '—' : diff}</td>`;
 
             });
             row += `</tr>`;

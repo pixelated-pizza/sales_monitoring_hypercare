@@ -57,7 +57,7 @@ function renderPast(selectedDate = null) {
             return diff.toFixed(2) + '%';
         };
 
-        let html = `<div class="mb-2 font-semibold text-gray-700"><i><b><span>Note: </b> Benchmark values refer to the same weekday from the previous week (${formatDate(lastWeekOfSelectedDate)})</i></span></div>`;
+        let html = `<div class="mb-2 font-semibold text-gray-700"></div>`;
         html += `<table class="min-w-full border border-gray-500 text-sm text-left text-gray-700">
         <thead class="bg-gray-100">
             <tr><th class="border px-2 py-1">Sales Channel</th>`;
@@ -115,7 +115,7 @@ function renderPast(selectedDate = null) {
         html += `<tr><td class="border px-2 py-1 text-black italic">Alert below 50% of Benchmark</td>`;
         timeRanges.forEach(range => {
             const isBelow50 = (comboPrev[range] || 0) * 0.5 > (comboToday[range] || 0);
-            html += `<td class="border px-2 py-1 text-center font-bold" colspan="2">${isBelow50 ? '🚩' : ''}</td>`;
+            html += `<td class="border px-2 py-1 text-center font-bold alert-pulse" colspan="2">${isBelow50 ? '🚩' : ''}</td>`;
         });
         html += `<td class="border px-2 py-1 bg-gray-800" colspan="2"></td></tr>`;
 
@@ -153,7 +153,7 @@ function renderPast(selectedDate = null) {
             html += `<tr class="alert-row"><td class="border px-2 py-1 text-black italic">Alert below 50% of Benchmark</td>`;
             timeRanges.forEach(range => {
                 const isBelow50 = (prevData[channel]?.[range] || 0) * 0.5 > (todayData[channel]?.[range] || 0);
-                html += `<td class="border px-2 py-1 text-center font-bold" colspan="2">${isBelow50 ? '🚩' : ''}</td>`;
+                html += `<td class="border px-2 py-1 text-center font-bold alert-pulse" colspan="2">${isBelow50 ? '🚩' : ''}</td>`;
             });
             html += `<td class="border px-2 py-1 bg-gray-800" colspan="2"></td></tr>`;
 
@@ -176,12 +176,12 @@ function renderPast(selectedDate = null) {
 
             const salesToday = getSalesData(todayData, channelKey);
             const salesPrev = getSalesData(prevData, channelKey);
-            const below30Flags = salesToday.map((v, i) => (salesPrev[i] > 0 && v <= salesPrev[i] * 0.3 ? v : null));
+            const below30Flags = salesToday.map((v, i) => (salesPrev[i] > 0 && v <= salesPrev[i] * 0.5 ? v : null));
 
             const redFlagPlugin = {
                 id: 'redFlagEmoji',
                 afterDatasetsDraw(chart) {
-                    const datasetIndex = chart.data.datasets.findIndex(d => d.label === 'Alert Data');
+                    const datasetIndex = chart.data.datasets.findIndex(d => d.label === '🚩 Below 50%');
 
                     if (datasetIndex === -1) return;
 
@@ -195,7 +195,7 @@ function renderPast(selectedDate = null) {
                             ctx.font = '18px Segoe UI Emoji'; 
                             ctx.textAlign = 'center';        
                             ctx.textBaseline = 'bottom';      
-                            ctx.fillText('🚩', point.x + 5, point.y - 32); 
+                            ctx.fillText('🚩', point.x + 5, point.y - 28); 
                             ctx.restore();
                         }
                     });
@@ -215,8 +215,9 @@ function renderPast(selectedDate = null) {
                             tension: 0,
                             pointBackgroundColor: '#007bff',
                             pointBorderColor: '#007bff',
-                            fill: false, 
-                            order: 1,
+                            backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                            fill: 'origin', 
+                            order: 0,
                             datalabels: {
                                 align: 'top',
                                 anchor: 'end',
@@ -247,7 +248,7 @@ function renderPast(selectedDate = null) {
                             backgroundColor: 'rgba(250, 128, 114, 1)',
                             type: 'line',
                             tension: 0,
-                            order: 2,
+                            order: 1,
                         },
 
                         {
@@ -263,11 +264,11 @@ function renderPast(selectedDate = null) {
                             tension: 0,
                             pointBackgroundColor: 'orange',
                             pointBorderColor: 'orange',
-                            order: 3,
+                            order: 2,
                         },
 
                         {
-                            label: 'Alert Data',
+                            label: '🚩 Below 50%',
                             data: below30Flags,
                             pointRadius: 0, 
                             pointHoverRadius: 0,
@@ -275,7 +276,8 @@ function renderPast(selectedDate = null) {
                             showLine: false,
                             fill: false,
                             type: 'line',
-                            order: 0,
+                            order: 3,
+                            backgroundColor: '#FF0000',
                             pointBackgroundColor: 'transparent', 
                             pointBorderColor: 'transparent'
                         }
@@ -367,12 +369,9 @@ document.getElementById('pastDate').addEventListener('change', function () {
 });
 
 document.addEventListener('DOMContentLoaded', function () {
-    const sydneyNowStr = new Date().toLocaleString('en-US', {
-        timeZone: 'Australia/Sydney'
-    });
-    const sydneyDate = new Date(sydneyNowStr);
-    sydneyDate.setDate(sydneyDate.getDate() - 1);
-    selectedPastDate = sydneyDate.toISOString().split('T')[0];
-    document.getElementById('pastDate').value = selectedPastDate;
-    renderPast(selectedPastDate);
+    const selected = document.getElementById('pastDate').value;
+    selectedPastDate = selected;
+    renderPast(selected);
 });
+
+

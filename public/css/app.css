@@ -196,6 +196,19 @@
 .glow-pulse {
     animation: glowPulse 2s ease-in-out infinite;
 }
+
+ @keyframes alertPulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.alert-pulse {
+    animation: alertPulse 0.5s ease-in-out infinite;
+}
 @keyframes pulseGreen {
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.6; transform: scale(1.05); }

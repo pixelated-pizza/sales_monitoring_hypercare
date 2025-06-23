@@ -2,15 +2,19 @@
 
 @section('title', 'Hourly Sales Hypercare')
 
+@php
+    $yesterdaySydney = \Carbon\Carbon::yesterday('Australia/Sydney')->format('Y-m-d');
+@endphp
+
+
 @section('content')
     <section class="p-6 max-w-full mx-auto main-content">
-        <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border border-gray-900 dark:border-gray-700 mb-8 ">
+        <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border border-gray-900 dark:border-gray-700">
             <h1 class="text-lg text-center font-bold mb-6">📊 Hourly Sales Hypercare</h1>
 
             <div class="mt-8">
                 <label for="pastDate" class="font-medium text-gray-700 dark:text-gray-200 mr-2">Filter Date:</label>
-                <input type="date" id="pastDate"
-                    max="{{ \Carbon\Carbon::yesterday('Australia/Sydney')->format('Y-m-d') }}"
+                <input type="date" id="pastDate" max="{{ $yesterdaySydney }}" value="{{ $yesterdaySydney }}"
                     class="border border-gray-300 dark:border-gray-600 px-3 py-2 rounded-md text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 focus:ring focus:ring-blue-300" />
             </div>
 
@@ -38,7 +42,7 @@
             </div>
         </div>
         <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border border-gray-900 dark:border-gray-700 mb-8 ">
-            
+
             <div id="load-past" class="hidden text-center my-4">
                 <div class="spinner inline-block align-middle mr-2"></div>
                 <span class="align-middle text-gray-700 dark:text-gray-200">Loading...</span>

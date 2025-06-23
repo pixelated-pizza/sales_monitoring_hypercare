@@ -26,17 +26,17 @@
             </style>
         @endif
     </head>
-    <body class="h-full bg-gray-300 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors">
+    <body class="h-full bg-gray-200 text-gray-900 dark:text-gray-100 transition-colors">
        
          <div class="flex h-screen">
             
-         <aside id="sidebar" class="sidebar w-64 bg-gray-100 dark:bg-gray-800 p-4 flex flex-col justify-between border border-black">
+         <aside id="sidebar" class="sidebar w-64 bg-gray-800 p-4 flex flex-col justify-between border border-black">
     
     <div>
         <div class="flex items-center justify-between mb-6">
-            <h2 class="text-xl font-semibold sidebar-text">HSMAH</h2>
+            <h2 class="text-xl font-semibold sidebar-text text-gray-100">HSMAH</h2>
             <button id="collapseBtn" aria-label="Toggle sidebar" class="p-1 rounded hover:bg-gray-300 dark:hover:bg-gray-700">
-                <svg class="w-6 h-6 sidebar-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                <svg class="w-6 h-6 sidebar-icon text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="3" y1="12" x2="21" y2="12" />
                     <line x1="3" y1="6" x2="21" y2="6" />
                     <line x1="3" y1="18" x2="21" y2="18" />
@@ -46,7 +46,7 @@
 
         <nav class="flex flex-col space-y-2">
         <a href="{{ route('sales') }}"
-            class="sidebar-text flex items-center gap-2 text-sm justify-start px-4 py-2 hover:text-gray-800 
+            class="sidebar-text flex items-center gap-2 text-sm justify-start px-4 py-2 text-gray-100 
             {{ request()->routeIs('sales') ? 'font-bold dark:text-yellow-300' : 'text-black dark:text-yellow-400' }}">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
                 viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
@@ -56,7 +56,7 @@
         </a>
 
         <a href="{{ route('hypercare') }}"
-            class="sidebar-text flex items-center test-sm gap-2 justify-start px-4 py-2 hover:text-gray-800 
+            class="sidebar-text flex items-center gap-2 text-sm justify-start px-4 py-2 text-gray-100
             {{ request()->routeIs('hypercare') ? 'font-bold dark:text-yellow-300' : 'text-black dark:text-yellow-400' }}">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
                 viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
