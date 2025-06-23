@@ -83,7 +83,7 @@ function renderPast(selectedDate = null) {
             const prev = (prevData["Edisons"]?.[range] || 0) + (prevData["Mytopia"]?.[range] || 0);
             const diff = getPercentDiff(today, prev);
             const isBelow50 = prev > 0 && today < prev * 0.5;
-            const colorClass = isBelow50 ? 'text-red-700 font-extrabold' : 'text-green-700 font-semibold';
+            const colorClass = isBelow50 ? 'text-red-700 font-extrabold' : 'text-green-700 font-bold';
 
             html += `<td class="border px-2 py-1 text-left font-semibold">${today}</td>`;
             html += `<td class="border px-2 py-1 text-left font-semibold ${colorClass}">${diff}</td>`;

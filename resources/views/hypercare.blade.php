@@ -9,7 +9,7 @@
 
 @section('content')
     <section class="p-6 max-w-full mx-auto main-content">
-        <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border border-gray-900 dark:border-gray-700">
+        <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6">
             <h1 class="text-lg text-center font-bold mb-6">📊 Hourly Sales Hypercare</h1>
 
             <div class="mt-8">
@@ -41,7 +41,7 @@
                 </div>
             </div>
         </div>
-        <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border border-gray-900 dark:border-gray-700 mb-8 ">
+        <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 mb-8 mt-2">
 
             <div id="load-past" class="hidden text-center my-4">
                 <div class="spinner inline-block align-middle mr-2"></div>

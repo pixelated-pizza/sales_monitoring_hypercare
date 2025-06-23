@@ -5,7 +5,7 @@
 @section('content')
     <section class="p-6 max-w-full mx-auto">
 
-        <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-800 mb-8">
+        <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
             <div class="flex items-center justify-center mb-5">
                 <span class="realtime-dot mr-2"></span>
                 <span id="last-updated" class="text-sm font-medium text-gray-700">Updated just now</span>
