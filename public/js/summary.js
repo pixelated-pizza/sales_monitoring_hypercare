@@ -92,7 +92,7 @@ function renderSummary() {
                 const future = isFutureRange(range);
                 const today = todayData[channel]?.[range] || 0;
                 const prev = prevData[channel]?.[range] || 0;
-                row += `<td class="border px-2 py-1 text-left ${future ? 'text-gray-400' : 'glow-pulse'}">${future ? '—' : today}</td>`;
+                row += `<td class="border px-2 py-1 text-left text-blue-500 font-semibold ${future ? 'text-gray-400' : 'glow-pulse'}">${future ? '—' : today}</td>`;
                 row += `<td class="border px-2 py-1 text-left text-gray-400">—</td>`;
                 comboToday[range] = (comboToday[range] || 0) + today;
                 comboPrev[range] = (comboPrev[range] || 0) + prev;
@@ -109,7 +109,7 @@ function renderSummary() {
             const diff = getPercentDiff(today, prev);
             const colorClass = today < prev * 0.5 ? 'text-red-700 font-extrabold' : 'text-green-500 font-bold';
 
-            html += `<td class="border px-2 py-1 text-left ${future ? 'text-gray-400' : 'glow-pulse'}">${future ? '—' : today}</td>`;
+            html += `<td class="border px-2 py-1 text-left text-blue-500 font-semibold ${future ? 'text-gray-400' : 'glow-pulse'}">${future ? '—' : today}</td>`;
             html += `<td class="border px-2 py-1 text-left ${future ? 'text-gray-400' : colorClass} ${future ? '' : ''}">${future ? '—' : diff}</td>`;
         });
         html += `</tr>`;
@@ -117,7 +117,7 @@ function renderSummary() {
         html += `<tr class="border-t-2"><td class="border px-2 py-1 text-gray-500 italic">Benchmark</td>`;
         timeRanges.forEach(range => {
             const val = comboPrev[range] || 0;
-            html += `<td class="border px-2 py-1 text-left" colspan="2">${isFutureRange(range) ? '—' : val}</td>`;
+            html += `<td class="border px-2 py-1 text-left text-yellow-800 font-semibold" colspan="2">${isFutureRange(range) ? '—' : val}</td>`;
         });
         html += `</tr>`;
 
@@ -137,7 +137,7 @@ function renderSummary() {
         html += `<tr><td class="border px-2 py-1 text-gray-500 italic">50% of Benchmark</td>`;
         timeRanges.forEach(range => {
             const val = comboPrev[range] || 0;
-            html += `<td class="border px-2 py-1 text-left" colspan="2">${isFutureRange(range) ? '—' : (val / 2).toFixed(0)}</td>`;
+            html += `<td class="border px-2 py-1 text-left text-red-700 font-semibold" colspan="2">${isFutureRange(range) ? '—' : (val / 2).toFixed(0)}</td>`;
         });
         html += `</tr>`;
 
@@ -153,7 +153,7 @@ function renderSummary() {
                 const diff = getPercentDiff(today, prev);
                 const colorClass = today < prev * 0.5 ? 'text-red-700 font-extrabold': 'text-green-500 font-bold';
 
-                row += `<td class="border px-2 py-1 text-left ${future ? 'text-gray-400' : 'glow-pulse'}">${future ? '—' : today}</td>`;
+                row += `<td class="border px-2 py-1 text-left text-blue-500 font-semibold ${future ? 'text-gray-400' : 'glow-pulse'}">${future ? '—' : today}</td>`;
                 row += `<td class="border px-2 py-1 text-left ${future ? 'text-gray-400' : colorClass} ${future ? '' : ''}">${future ? '—' : diff}</td>`;
 
             });
@@ -163,7 +163,7 @@ function renderSummary() {
             html += `<tr><td class="border px-2 py-1 text-gray-500 italic">Benchmark</td>`;
             timeRanges.forEach(range => {
                 const val = prevData[channel]?.[range] || 0;
-                html += `<td class="border px-2 py-1 text-left" colspan="2">${isFutureRange(range) ? '—' : val}</td>`;
+                html += `<td class="border px-2 py-1 text-left text-yellow-800 font-semibold" colspan="2">${isFutureRange(range) ? '—' : val}</td>`;
             });
             html += `</tr>`;
 
@@ -183,7 +183,7 @@ function renderSummary() {
             html += `<tr><td class="border px-2 py-1 text-gray-500 italic">50% of Benchmark</td>`;
             timeRanges.forEach(range => {
                 const val = prevData[channel]?.[range] || 0;
-                html += `<td class="border px-2 py-1 text-left" colspan="2">${isFutureRange(range) ? '—' : (val / 2).toFixed(0)}</td>`;
+                html += `<td class="border px-2 py-1 text-left text-red-700 font-semibold" colspan="2">${isFutureRange(range) ? '—' : (val / 2).toFixed(0)}</td>`;
             });
             html += `</tr>`;
         });

@@ -57,7 +57,7 @@ function renderPast(selectedDate = null) {
             return diff.toFixed(2) + '%';
         };
 
-        let html = `<div class="mb-2 font-semibold text-gray-700"></div>`;
+        let html = `<div class="mb-2 font-semibold text-gray-700 text-center">Sales Data Table</div>`;
         html += `<table class="min-w-full border border-gray-500 text-sm text-left text-gray-700">
         <thead class="bg-gray-100">
             <tr><th class="border px-2 py-1">Sales Channel</th>`;
@@ -71,7 +71,7 @@ function renderPast(selectedDate = null) {
         let comboTodayTotal = 0,
             comboPrevTotal = 0;
         const comboToday = {},
-            comboPrev = {};
+              comboPrev = {};
         let comboAlert = false;
 
         html += `<tr class="bg-gray-200 group cursor-pointer toggle-website collapsed">
@@ -85,7 +85,7 @@ function renderPast(selectedDate = null) {
             const isBelow50 = prev > 0 && today < prev * 0.5;
             const colorClass = isBelow50 ? 'text-red-700 font-extrabold' : 'text-green-700 font-bold';
 
-            html += `<td class="border px-2 py-1 text-left font-semibold">${today}</td>`;
+            html += `<td class="border px-2 py-1 text-left font-semibold text-blue-700 font-semibold">${today}</td>`;
             html += `<td class="border px-2 py-1 text-left font-semibold ${colorClass}">${diff}</td>`;
             comboToday[range] = today;
             comboPrev[range] = prev;
@@ -93,7 +93,7 @@ function renderPast(selectedDate = null) {
             comboPrevTotal += prev;
             if (isBelow50) comboAlert = true;
         });
-        html += `<td class="border px-2 py-1 font-bold">${comboTodayTotal}</td></tr>`;
+        html += `<td class="border px-2 py-1 font-bold text-blue-700 font-semibold">${comboTodayTotal}</td></tr>`;
 
         html += `<tbody class="website-details">`;
         comboChannels.forEach(channel => {
@@ -109,8 +109,8 @@ function renderPast(selectedDate = null) {
         html += `</tbody>`;
 
         html += `<tr class="benchmark-row"><td class="border px-2 py-1 text-black italic">Benchmark</td>`;
-        timeRanges.forEach(range => html += `<td class="border px-2 py-1 text-left" colspan="2">${comboPrev[range] || 0}</td>`);
-        html += `<td class="border px-2 py-1 text-left" colspan="2">${comboPrevTotal}</td></tr>`;
+        timeRanges.forEach(range => html += `<td class="border px-2 py-1 text-left text-yellow-800 font-semibold" colspan="2">${comboPrev[range] || 0}</td>`);
+        html += `<td class="border px-2 py-1 text-left text-blue-700 font-semibold" colspan="2">${comboPrevTotal}</td></tr>`;
 
         html += `<tr><td class="border px-2 py-1 text-black italic">Alert below 50% of Benchmark</td>`;
         timeRanges.forEach(range => {
@@ -120,7 +120,7 @@ function renderPast(selectedDate = null) {
         html += `<td class="border px-2 py-1 bg-gray-800" colspan="2"></td></tr>`;
 
         html += `<tr class="benchmark-50-row"><td class="border px-2 py-1 text-black italic">50% of Benchmark</td>`;
-        timeRanges.forEach(range => html += `<td class="border px-2 py-1 text-left" colspan="2">${((comboPrev[range] || 0) / 2).toFixed(0)}</td>`);
+        timeRanges.forEach(range => html += `<td class="border px-2 py-1 text-left text-red-400 font-semibold" colspan="2">${((comboPrev[range] || 0) / 2).toFixed(0)}</td>`);
         html += `<td class="border px-2 py-1 text-left" colspan="2">${(comboPrevTotal / 2).toFixed(0)}</td></tr>`;
 
 
@@ -138,16 +138,16 @@ function renderPast(selectedDate = null) {
                 const diff = getPercentDiff(today, prev);
                 const isBelow50 = prev > 0 && today < prev * 0.5;
                 const colorClass = isBelow50 ? 'text-red-700 font-extrabold' : 'text-green-700 font-semibold';
-                row += `<td class="border px-2 py-1 text-left">${today}</td><td class="border px-2 py-1 text-left ${colorClass}">${diff}</td>`;
+                row += `<td class="border px-2 py-1 text-left text-blue-600 font-semibold">${today}</td><td class="border px-2 py-1 text-left ${colorClass}">${diff}</td>`;
                 totalToday += today;
                 totalPrev += prev;
                 if (isBelow50) alert = true;
             });
-            row += `<td class="border px-2 py-1 font-bold">${totalToday}</td></tr>`;
+            row += `<td class="border px-2 py-1 font-bold text-blue-600 font-semibold">${totalToday}</td></tr>`;
             html += row;
 
             html += `<tr><td class="border px-2 py-1 text-black italic">Benchmark</td>`;
-            timeRanges.forEach(range => html += `<td class="border px-2 py-1 text-left" colspan="2">${prevData[channel]?.[range] || 0}</td>`);
+            timeRanges.forEach(range => html += `<td class="border px-2 py-1 text-left text-yellow-800 font-semibold" colspan="2">${prevData[channel]?.[range] || 0}</td>`);
             html += `<td class="border px-2 py-1 text-left" colspan="2">${totalPrev}</td></tr>`;
 
             html += `<tr class="alert-row"><td class="border px-2 py-1 text-black italic">Alert below 50% of Benchmark</td>`;
@@ -158,7 +158,7 @@ function renderPast(selectedDate = null) {
             html += `<td class="border px-2 py-1 bg-gray-800" colspan="2"></td></tr>`;
 
             html += `<tr class="benchmark-50-row"><td class="border px-2 py-1 text-black italic">50% of Benchmark</td>`;
-            timeRanges.forEach(range => html += `<td class="border px-2 py-1 text-left font-semibold" colspan="2">${((prevData[channel]?.[range] || 0) / 2).toFixed(0)}</td>`);
+            timeRanges.forEach(range => html += `<td class="border px-2 py-1 text-left text-red-400 font-semibold" colspan="2">${((prevData[channel]?.[range] || 0) / 2).toFixed(0)}</td>`);
             html += `<td class="border px-2 py-1 text-left" colspan="2">${(totalPrev / 2).toFixed(0)}</td></tr>`;
         });
 
@@ -233,7 +233,7 @@ function renderPast(selectedDate = null) {
                         },
 
                         {
-                            label: '30% of Benchmark',
+                            label: '50% of Benchmark',
                             data: salesPrev.map(v => v * 0.5),
                             borderWidth: 1,
                             pointRadius: 0,

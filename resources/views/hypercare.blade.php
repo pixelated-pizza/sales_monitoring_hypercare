@@ -19,10 +19,11 @@
             </div>
 
             <div id="chartLoading" class="text-center my-8">
-                <div class="loader"></div>
+                <div class="loader inline-block align-middle mr-2"></div>
+                <span class="align-middle text-gray-700 dark:text-gray-200">Loading graph...</span>
             </div>
 
-            <div id="lineChartWrapper" class="hidden">
+            <div id="lineChartWrapper" class="hidden min-h-[500px]">
                 <div class="text-center mb-5">
                     <label for="channelSelect" class="font-medium mr-2">Select Sales Channel:</label>
                     <select id="channelSelect"
@@ -45,9 +46,9 @@
 
             <div id="load-past" class="hidden text-center my-4">
                 <div class="spinner inline-block align-middle mr-2"></div>
-                <span class="align-middle text-gray-700 dark:text-gray-200">Loading...</span>
+                <span class="align-middle text-gray-700 dark:text-gray-200">Loading data table...</span>
             </div>
-            <div id="past-sales" class="overflow-auto mt-4"></div>
+            <div id="past-sales" class="overflow-auto mt-4 overflow-auto mt-4 min-h-[300px]"></div>
         </div>
     </section>
 @endsection

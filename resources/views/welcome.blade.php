@@ -14,6 +14,9 @@
         <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
         <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+        <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+        <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
 
         <!-- Styles / Scripts -->
@@ -26,17 +29,19 @@
             </style>
         @endif
     </head>
-    <body class="h-full bg-gray-200 text-gray-900 dark:text-gray-100 transition-colors">
+    <body class="h-full bg-gradient-to-r from-blue-400 via-blue-600 to-blue-900 text-gray-900 transition-colors">
        
          <div class="flex h-screen">
             
          <aside id="sidebar" class="sidebar w-64 bg-gray-800 p-4 flex flex-col justify-between border border-black">
     
     <div>
-        <div class="flex items-center justify-between mb-6">
-            <h2 class="text-xl font-semibold sidebar-text text-gray-100">HSMAH</h2>
-            <button id="collapseBtn" aria-label="Toggle sidebar" class="p-1 rounded hover:bg-gray-300 dark:hover:bg-gray-700">
-                <svg class="w-6 h-6 sidebar-icon text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+        
+        <div class="flex items-center justify-between mb-6 border-b border-gray-200 pb-5">
+            {{-- <img src={{ asset('logo.png') }} style="height: 40px" class="mb-5"> --}}
+            <h2 class="text-md font-semibold sidebar-text text-gray-100">Sales Monitoring & Hypercare</h2>
+            <button id="collapseBtn" aria-label="Toggle sidebar" class="p-1 rounded hover:bg-gray-300 dark:hover:bg-gray-700 text-white hover:text-gray-800">
+                <svg class="w-6 h-6 sidebar-icon " fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="3" y1="12" x2="21" y2="12" />
                     <line x1="3" y1="6" x2="21" y2="6" />
                     <line x1="3" y1="18" x2="21" y2="18" />
@@ -64,6 +69,20 @@
             </svg>
             Hypercare
         </a>
+        <a href="{{ route('datasource') }}"
+            class="sidebar-text flex items-center gap-2 text-sm justify-start px-4 py-2 text-gray-100
+                {{ request()->routeIs('datasource') ? 'font-bold dark:text-yellow-300' : 'text-black dark:text-yellow-400' }}">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                <ellipse cx="12" cy="5" rx="7" ry="3" />
+                <path d="M5 5v6c0 1.66 3.13 3 7 3s7-1.34 7-3V5" />
+                <path d="M5 11v6c0 1.66 3.13 3 7 3s7-1.34 7-3v-6" />
+                <path d="M8 8l-2 2 2 2" />
+                <path d="M6 10h8" />
+            </svg>
+            Data Source
+        </a>
+
     </nav>
     </div>
 
@@ -78,9 +97,11 @@
         </main>
         
     </div>
+    <script src="{{ asset('js/datasource.js') }}"></script>
     <script src="{{ asset('js/summary.js') }}"></script>
     <script src="{{ asset('js/last_two_weeks.js') }}"></script>
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{ asset('js/weather.js') }}"></script>
+    
     </body>
 </html>

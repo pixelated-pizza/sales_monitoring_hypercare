@@ -21,7 +21,7 @@ class PastDataController extends Controller
 
     private function fetchSalesByDate($date)
     {
-        $cacheKey = 'sales_' . $date->toDateString();
+        $cacheKey = 'sales_' . $date->toDateString() . '_raw';
         $timeBuckets = $this->timeBuckets;
 
         return Cache::remember($cacheKey, now()->addMinutes(10), function () use ($date, $timeBuckets) {
@@ -50,7 +50,7 @@ class PastDataController extends Controller
                         "DatePlacedFrom" => [$dateFrom],
                         "DatePlacedTo" => [$dateTo],
                         "SalesChannel" => ["Edisons", "Mytopia", "eBay", "BigW", "Mydeals", "Kogan", "Bunnings"],
-                        "OutputSelector" => ["OrderID", "SalesChannel", "DatePlaced", "OrderLine"]
+                        "OutputSelector" => ["OrderID", "SalesChannel", "DatePlaced"]
                     ]
                 ]
             ]);
@@ -59,10 +59,10 @@ class PastDataController extends Controller
             $grouped = [];
 
             foreach ($orders as $order) {
-                if (!isset($order['SalesChannel'], $order['DatePlaced'], $order['OrderLine'])) continue;
+                if (!isset($order['SalesChannel'], $order['DatePlaced'])) continue;
 
-            
-                $datePlaced = Carbon::parse($order['DatePlaced'])->addHours(10);
+
+                $datePlaced = Carbon::parse($order['DatePlaced'], 'UTC')->setTimezone('Australia/Sydney');
                 $hour = (int) $datePlaced->format('H');
 
                 foreach ($timeBuckets as $label => [$start, $end]) {
@@ -97,70 +97,16 @@ class PastDataController extends Controller
 
         return $this->fetchSalesByDate($date);
     }
+
 }
 
-// private function fetchSalesByDate($date) {
-    //     $cacheKey = 'sales_' . $date->toDateString();
-    //     $timeBuckets = $this->timeBuckets; 
 
-    //     return Cache::remember($cacheKey, now()->addMinutes(10), function () use ($date, $timeBuckets) {
-    //         $client = new \GuzzleHttp\Client();
-    //         $dateStr = $date->format('Y-m-d');
-    //         $dateFrom = "{$dateStr} 00:00:00";
-    //         $dateTo = "{$dateStr} 23:59:59";
-
-    //         $response = $client->post(env('NETO_API_URL'), [
-    //             'headers' => [
-    //                 'Accept' => 'application/json',
-    //                 'NETOAPI_ACTION' => 'GetOrder',
-    //                 'NETOAPI_KEY' => env('NETO_API_KEY')
-    //             ],
-    //             'json' => [
-    //                 "Filter" => [
-    //                     "DatePlacedFrom" => [$dateFrom],
-    //                     "DatePlacedTo" => [$dateTo],
-    //                     "SalesChannel" => ["Edisons", "Mytopia", "eBay", "BigW", "Mydeals", "Kogan", "Bunnings"],
-    //                     "OutputSelector" => ["OrderID", "SalesChannel", "DatePlaced", "OrderLine"]
-    //                 ]
-    //             ]
-    //         ]);
-
-    //         $orders = json_decode($response->getBody(), true)['Order'] ?? [];
-    //         $grouped = [];
-
-    //         foreach ($orders as $order) {
-    //             if (!isset($order['SalesChannel'], $order['DatePlaced'], $order['OrderLine'])) continue;
-
-    //             $hasCxrSku = false;
-    //             foreach ($order['OrderLine'] as $line) {
-    //                 if (isset($line['SKU']) && str_starts_with($line['SKU'], 'CXR-')) {
-    //                     $hasCxrSku = true;
-    //                     break;
-    //                 }
-    //             }
-    //             if ($hasCxrSku) continue;
-
-    //             $datePlaced = Carbon::parse($order['DatePlaced'])->addHours(10);
-    //             $hour = (int) $datePlaced->format('H');
-
-    //             foreach ($timeBuckets as $label => [$start, $end]) {
-    //                 if ($hour >= $start && $hour <= $end) {
-    //                     $channel = $order['SalesChannel'];
-    //                     $grouped[$channel][$label] = ($grouped[$channel][$label] ?? 0) + 1;
-    //                     break;
-    //                 }
-    //             }
-    //         }
-
-    //         return $grouped;
-    //     });
-    // }
-                //code if orders are wanted to be filtered
-                // $hasCxrSku = false;
-                // foreach ($order['OrderLine'] as $line) {
-                //     if (isset($line['SKU']) && str_starts_with($line['SKU'], 'CXR-')) {
-                //         $hasCxrSku = true;
-                //         break;
-                //     }
-                // }
-                // if ($hasCxrSku) continue;
+//code if orders are wanted to be filtered
+// $hasCxrSku = false;
+// foreach ($order['OrderLine'] as $line) {
+//     if (isset($line['SKU']) && str_starts_with($line['SKU'], 'CXR-')) {
+//         $hasCxrSku = true;
+//         break;
+//     }
+// }
+// if ($hasCxrSku) continue;
