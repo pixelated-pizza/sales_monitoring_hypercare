@@ -9,6 +9,7 @@
 @section('content')
     <section class="p-6 max-w-full mx-auto main-content">
         <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border border-gray-900 dark:border-gray-700 mb-8">
+            <h2 class="text-center font-semibold text-lg mb-5">Data Source - Orders</h2>
             <div class="flex flex-wrap gap-4 mb-4 border border-gray-400 rounded-lg p-3">
                 <label for="dateFilter" class="text-gray-800 dark:text-gray-200"><span class="font-semibold">Date:</span> 
                     <input type="date" id="dateFilter" max="{{ $today }}" value="{{ $today }}"
@@ -36,7 +37,6 @@
                         <option value="Mytopia">Mytopia</option>
                         <option value="eBay">eBay</option>
                         <option value="BigW">BigW</option>
-                        <option value="Mydeals">Mydeals</option>
                         <option value="Kogan">Kogan</option>
                         <option value="Bunnings">Bunnings</option>
                     </select>
@@ -60,6 +60,7 @@
                 <div class="spinner inline-block align-middle mr-2"></div>
                 <span class="align-middle text-gray-700 dark:text-gray-200">Loading data source...</span>
             </div>
+            <div id="order-count" class="mb-4 text-sm text-gray-700 dark:text-gray-200 font-semibold"></div>
             <div id="data-source" class="overflow-auto mt-4 overflow-auto mt-4 min-h-[300px]"></div>
             <div id="pagination" class="flex gap-2 mt-4 justify-center text-sm text-gray-700 dark:text-gray-300"></div>
 

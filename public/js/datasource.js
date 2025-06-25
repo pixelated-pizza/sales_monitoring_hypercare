@@ -49,7 +49,7 @@ function renderDataSource(selectedDate = null) {
                 };
                 const [startHour, endHour] = rangeMap[selectedTimeRange] || [];
                 data = data.filter(item => {
-                    const orderHour = new Date(item.DatePlaced).getHours();
+                    const orderHour = getSydneyHour(item.DatePlaced);
                     return orderHour >= startHour && orderHour <= endHour;
                 });
             }
@@ -68,6 +68,11 @@ function renderDataSource(selectedDate = null) {
                 container.innerHTML = '<div class="text-gray-600 text-center font-bold">No records found.</div>';
                 return;
             }
+
+            const uniqueOrderIDs = new Set(data.map(item => item.OrderID));
+            const orderCount = uniqueOrderIDs.size;
+
+            document.getElementById('order-count').innerText = `Total Orders: ${orderCount}`;
 
             allData = data;
             currentPage = 1;

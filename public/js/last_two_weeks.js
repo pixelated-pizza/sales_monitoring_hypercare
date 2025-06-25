@@ -1,5 +1,16 @@
 let selectedPastDate = null;
 
+function getSydneyHour(dateString) {
+    const utcDate = new Date(dateString);
+    const sydneyOffset = 10 * 60; 
+    const isDST = (new Date()).toLocaleString('en-AU', { timeZoneName: 'short' }).includes('AEDT');
+
+    const offset = isDST ? 11 * 60 : sydneyOffset;
+    const localTimestamp = utcDate.getTime() + offset * 60 * 1000;
+    const sydneyDate = new Date(localTimestamp);
+    return sydneyDate.getHours();
+}
+
 function renderPast(selectedDate = null) {
     const container = document.getElementById('past-sales');
     const loadingElem = document.getElementById('load-past');

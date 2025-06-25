@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Cache;
 
 class DataSourceController extends Controller
 {
+    
     public function fetchData($date)
     {
         $cacheKey = 'data_' . $date->toDateString() . '_raw';
