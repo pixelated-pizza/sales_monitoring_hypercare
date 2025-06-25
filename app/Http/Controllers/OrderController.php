@@ -92,7 +92,7 @@ class OrderController extends Controller
 
     public function predictTomorrowSales($days = 7)
     {
-        $cacheKey = 'sales_prediction_' . now()->format('Y-m-d'); // unique per day
+        $cacheKey = 'sales_prediction_' . now()->format('Y-m-d'); 
         return Cache::remember($cacheKey, now()->addMinutes(30), function () use ($days) {
             $history = [];
 
