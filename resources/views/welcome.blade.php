@@ -97,6 +97,7 @@
         </main>
         
     </div>
+    <script src="{{ asset('js/predict.js') }}"></script>
     <script src="{{ asset('js/datasource.js') }}"></script>
     <script src="{{ asset('js/summary.js') }}"></script>
     <script src="{{ asset('js/last_two_weeks.js') }}"></script>

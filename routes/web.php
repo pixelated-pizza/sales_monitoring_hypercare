@@ -27,3 +27,4 @@ Route::get('/api/yesterday-sales', [PastDataController::class, 'fetchYesterdaySa
 Route::get('/api/last-week', [PastDataController::class, 'fetchSameWeekdayLastWeekSales']);
 
 Route::get('/api/data-source', [DataSourceController::class, 'getRawOrders']);
+Route::get('/api/predict-sales', [OrderController::class, 'predictTomorrowSales']);

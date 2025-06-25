@@ -62,7 +62,7 @@ class OrderController extends Controller
             foreach ($orders as $order) {
                 if (!isset($order['SalesChannel'], $order['DatePlaced'], $order['OrderLine'])) continue;
 
-                $datePlaced = Carbon::parse($order['DatePlaced'])->addHours(10); 
+                $datePlaced = Carbon::parse($order['DatePlaced'])->addHours(10);
                 $hour = (int) $datePlaced->format('H');
 
                 foreach ($timeBuckets as $label => [$start, $end]) {
@@ -88,5 +88,54 @@ class OrderController extends Controller
     {
         $date = Carbon::today('Australia/Sydney')->subDays(7);
         return $this->fetchAndGroupSales($date);
+    }
+
+    public function predictTomorrowSales($days = 7)
+    {
+        $cacheKey = 'sales_prediction_' . now()->format('Y-m-d'); // unique per day
+        return Cache::remember($cacheKey, now()->addMinutes(30), function () use ($days) {
+            $history = [];
+
+            for ($i = $days; $i > 0; $i--) {
+                $date = Carbon::today('Australia/Sydney')->subDays($i);
+                $dailySales = $this->fetchAndGroupSales($date);
+
+                foreach ($dailySales as $channel => $timeData) {
+                    foreach ($timeData as $timeLabel => $count) {
+                        $history[$channel][$timeLabel][] = $count;
+                    }
+                }
+            }
+
+            $predicted = [];
+
+            foreach ($history as $channel => $timeBuckets) {
+                foreach ($timeBuckets as $bucket => $counts) {
+                    $x = range(1, count($counts));
+                    $y = $counts;
+
+                    $n = count($x);
+                    if ($n < 2) continue;
+
+                    $x_mean = array_sum($x) / $n;
+                    $y_mean = array_sum($y) / $n;
+
+                    $numerator = 0;
+                    $denominator = 0;
+                    for ($i = 0; $i < $n; $i++) {
+                        $numerator += ($x[$i] - $x_mean) * ($y[$i] - $y_mean);
+                        $denominator += pow($x[$i] - $x_mean, 2);
+                    }
+
+                    $slope = $denominator != 0 ? $numerator / $denominator : 0;
+                    $intercept = $y_mean - $slope * $x_mean;
+
+                    $predictedCount = $slope * ($n + 1) + $intercept;
+                    $predicted[$channel][$bucket] = round(max(0, $predictedCount));
+                }
+            }
+
+            return $predicted;
+        });
     }
 }
