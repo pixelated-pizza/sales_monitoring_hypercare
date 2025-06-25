@@ -25,7 +25,9 @@ function renderDataSource(selectedDate = null) {
         params.date = filterDate;
     }
 
-    axios.get('/api/data-source', { params })
+    axios.get('/api/data-source', {
+            params
+        })
         .then(response => {
             loadData.style.display = "none";
             let data = response.data;
@@ -35,7 +37,7 @@ function renderDataSource(selectedDate = null) {
                 return;
             }
 
- 
+
             if (selectedTimeRange) {
                 const rangeMap = {
                     "1AM - 8AM": [1, 8],
@@ -52,13 +54,19 @@ function renderDataSource(selectedDate = null) {
                 });
             }
 
-     
+
             if (selectedChannel) {
                 data = data.filter(item => item.SalesChannel === selectedChannel);
             }
 
             if (selectedStatus) {
                 data = data.filter(item => item.OrderStatus === selectedStatus);
+            }
+
+            if (data.length === 0) {
+                allData = [];
+                container.innerHTML = '<div class="text-gray-600 text-center font-bold">No records found.</div>';
+                return;
             }
 
             allData = data;
@@ -127,7 +135,7 @@ function renderTablePage() {
     container.innerHTML = html;
 
 
-   
+
     const maxVisibleButtons = 5;
     let startPage = Math.max(1, currentPage - 2);
     let endPage = Math.min(totalPages, startPage + maxVisibleButtons - 1);
@@ -188,7 +196,7 @@ function renderTablePage() {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    renderDataSource(); 
+    renderDataSource();
 
     document.getElementById('timeFilter').addEventListener('change', () => renderDataSource(filterDate));
     document.getElementById('channelFilter').addEventListener('change', () => renderDataSource(filterDate));

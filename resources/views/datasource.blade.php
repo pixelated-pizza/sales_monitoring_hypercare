@@ -3,7 +3,7 @@
 @section('title', 'Data Source')
 
 @php
-    $yesterdaySydney = \Carbon\Carbon::yesterday('Australia/Sydney')->format('Y-m-d');
+    $today = \Carbon\Carbon::today('Australia/Sydney')->format('Y-m-d');
 @endphp
 
 @section('content')
@@ -11,7 +11,7 @@
         <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border border-gray-900 dark:border-gray-700 mb-8">
             <div class="flex flex-wrap gap-4 mb-4 border border-gray-400 rounded-lg p-3">
                 <label for="dateFilter" class="text-gray-800 dark:text-gray-200"><span class="font-semibold">Date:</span> 
-                    <input type="date" id="dateFilter" max="{{ $yesterdaySydney }}" value="{{ $yesterdaySydney }}"
+                    <input type="date" id="dateFilter" max="{{ $today }}" value="{{ $today }}"
                     class="ml-2 border rounded p-1 dark:bg-gray-800 dark:text-gray-100" />
                 </label>
                 
