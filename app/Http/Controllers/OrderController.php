@@ -90,12 +90,23 @@ class OrderController extends Controller
         return $this->fetchAndGroupSales($date);
     }
 
-    public function predictTomorrowSales($days = 7)
+    public function predict_sales($days = 7)
     {
-        $cacheKey = 'sales_prediction_' . now()->format('Y-m-d'); 
-        return Cache::remember($cacheKey, now()->addMinutes(30), function () use ($days) {
-            $history = [];
+        $now = Carbon::now('Australia/Sydney');
+        $currentHour = $now->hour;
+        $timeBuckets = [
+            '1AM - 8AM'   => range(1, 8),
+            '9AM - 10AM'  => range(9, 10),
+            '11AM - 2PM'  => range(11, 14),
+            '3PM - 5PM'   => range(15, 17),
+            '6PM - 9PM'   => range(18, 21),
+            '10PM - 12AM' => [22, 23, 0],
+        ];
 
+        $cacheKey = 'sales_prediction_today_' . $now->format('Y-m-d_H');
+        return Cache::remember($cacheKey, now()->addMinutes(30), function () use ($days, $now, $timeBuckets, $currentHour) {
+
+            $history = [];
             for ($i = $days; $i > 0; $i--) {
                 $date = Carbon::today('Australia/Sydney')->subDays($i);
                 $dailySales = $this->fetchAndGroupSales($date);
@@ -107,35 +118,49 @@ class OrderController extends Controller
                 }
             }
 
-            $predicted = [];
+            $todaySales = $this->fetchAndGroupSales(Carbon::today('Australia/Sydney'));
 
-            foreach ($history as $channel => $timeBuckets) {
-                foreach ($timeBuckets as $bucket => $counts) {
-                    $x = range(1, count($counts));
-                    $y = $counts;
+            $results = [];
 
-                    $n = count($x);
-                    if ($n < 2) continue;
+            $allChannels = array_unique(array_merge(array_keys($history), array_keys($todaySales)));
 
-                    $x_mean = array_sum($x) / $n;
-                    $y_mean = array_sum($y) / $n;
+            foreach ($allChannels as $channel) {
+                foreach ($timeBuckets as $bucket => $hours) {
+                    $latestHour = max($hours);
+                    $isFuture = ($latestHour > $currentHour || ($latestHour === 0 && $currentHour < 1));
 
-                    $numerator = 0;
-                    $denominator = 0;
-                    for ($i = 0; $i < $n; $i++) {
-                        $numerator += ($x[$i] - $x_mean) * ($y[$i] - $y_mean);
-                        $denominator += pow($x[$i] - $x_mean, 2);
+                    if ($isFuture) {
+                        $counts = $history[$channel][$bucket] ?? [];
+                        $n = count($counts);
+                        if ($n >= 2) {
+                            $x = range(1, $n);
+                            $y = $counts;
+
+                            $x_mean = array_sum($x) / $n;
+                            $y_mean = array_sum($y) / $n;
+
+                            $numerator = 0;
+                            $denominator = 0;
+                            for ($i = 0; $i < $n; $i++) {
+                                $numerator += ($x[$i] - $x_mean) * ($y[$i] - $y_mean);
+                                $denominator += pow($x[$i] - $x_mean, 2);
+                            }
+
+                            $slope = $denominator != 0 ? $numerator / $denominator : 0;
+                            $intercept = $y_mean - $slope * $x_mean;
+                            $predictedCount = $slope * ($n + 1) + $intercept;
+
+                            $results[$channel][$bucket] = round(max(0, $predictedCount));
+                        } else {
+                            $results[$channel][$bucket] = 0;
+                        }
+                    } else {
+                        $results[$channel][$bucket] = $todaySales[$channel][$bucket] ?? 0;
                     }
-
-                    $slope = $denominator != 0 ? $numerator / $denominator : 0;
-                    $intercept = $y_mean - $slope * $x_mean;
-
-                    $predictedCount = $slope * ($n + 1) + $intercept;
-                    $predicted[$channel][$bucket] = round(max(0, $predictedCount));
                 }
             }
 
-            return $predicted;
+            return $results;
         });
     }
 }
