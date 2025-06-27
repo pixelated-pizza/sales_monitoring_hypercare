@@ -101,8 +101,8 @@ function renderTablePage() {
     const pageData = allData.slice(start, end);
 
     let html = `
-        <div class="overflow-x-auto">
-            <table class="table-auto w-full text-sm border border-collapse border-gray-300 dark:border-gray-700">
+        <div class="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-600">
+            <table class="min-w-[1000px] table-auto w-full text-sm border border-collapse border-gray-300 dark:border-gray-700">
                 <thead class="bg-gray-200 dark:bg-gray-800">
                     <tr>
                         <th class="border px-2 py-1">Order ID</th>

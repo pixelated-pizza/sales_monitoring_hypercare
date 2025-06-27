@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 html += `<tr class="even:bg-gray-50">`;
                 html += `<td class="border border-gray-300 px-4 py-2 font-semibold">${channel}</td>`;
                 timeRanges.forEach(range => {
-                    const sales = data[channel]?.[range] || "—";
+                    const sales = data[channel]?.[range] || "";
                     html += `<td class="border border-gray-300 px-4 py-2 text-right">${sales}</td>`;
                 });
                 html += `</tr>`;

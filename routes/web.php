@@ -17,6 +17,10 @@ Route::get('/datasource', function () {
     return view('datasource');  
 })->name('datasource');
 
+Route::get('/salesforecast', function () {
+    return view('salesforecast');  
+})->name('salesforecast');
+
 Route::get('/api/prev-sales', [OrderController::class, 'fetchSameWeekdayLastWeekSales']);
 
 Route::get('/api/today-sales', [OrderController::class, 'fetchTodaySales']);
@@ -28,3 +32,5 @@ Route::get('/api/last-week', [PastDataController::class, 'fetchSameWeekdayLastWe
 
 Route::get('/api/data-source', [DataSourceController::class, 'getRawOrders']);
 Route::get('/api/predict-sales', [OrderController::class, 'predict_sales']);
+
+Route::get('/api/live-orders', [OrderController::class, 'fetchLiveOrders']);

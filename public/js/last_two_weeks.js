@@ -62,7 +62,7 @@ function renderPast(selectedDate = null) {
         });
 
         const getPercentDiff = (sales, benchmark) => {
-            if (benchmark === 0) return sales === 0 ? '0.00%' : '—';
+            if (benchmark === 0) return sales === 0 ? '0.00%' : '';
             let diff = ((sales - benchmark) / benchmark) * 100;
             diff = Math.max(Math.min(diff, 999.99), -999.99);
             return diff.toFixed(2) + '%';
@@ -112,9 +112,9 @@ function renderPast(selectedDate = null) {
             timeRanges.forEach(range => {
                 const today = todayData[channel]?.[range] || 0;
                 const prev = prevData[channel]?.[range] || 0;
-                row += `<td class="border px-2 py-1 text-left">${today}</td><td class="border px-2 py-1 text-left">—</td>`;
+                row += `<td class="border px-2 py-1 text-left">${today}</td><td class="border px-2 py-1 text-left"></td>`;
             });
-            row += `<td class="border px-2 py-1 font-bold">—</td><td class="border px-2 py-1">—</td></tr>`;
+            row += `<td class="border px-2 py-1 font-bold"></td><td class="border px-2 py-1"></td></tr>`;
             html += row;
         });
         html += `</tbody>`;

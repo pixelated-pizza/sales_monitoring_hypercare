@@ -61,7 +61,7 @@
                 <span class="align-middle text-gray-700 dark:text-gray-200">Loading data source...</span>
             </div>
             <div id="order-count" class="mb-4 text-sm text-gray-700 dark:text-gray-200 font-semibold"></div>
-            <div id="data-source" class="overflow-auto mt-4 overflow-auto mt-4 min-h-[300px]"></div>
+            <div id="data-source" class="mt-4 overflow-x-auto min-h-[300px]"></div>
             <div id="pagination" class="flex gap-2 mt-4 justify-center text-sm text-gray-700 dark:text-gray-300"></div>
 
         </div>

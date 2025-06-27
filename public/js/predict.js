@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const colors = ['#36A2EB', '#FF6384', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'];
 
             const allTimeBuckets = ["1AM - 8AM", "9AM - 10AM", "11AM - 2PM", "3PM - 5PM", "6PM - 9PM", "10PM - 12AM"];
-            const currentHour = new Date().getHours();
+
 
             const timeBucketMap = {
                 "1AM - 8AM": [1, 8],
@@ -34,9 +34,35 @@ document.addEventListener('DOMContentLoaded', function () {
                 "10PM - 12AM": [22, 23, 0],
             };
 
-            const remainingBuckets = allTimeBuckets.filter(bucket => {
-                return timeBucketMap[bucket].some(h => h > currentHour || h === 0 && currentHour < 1);
-            });
+            function getNextRefreshDelay() {
+                const now = new Date();
+                const currentHour = now.getHours();
+                const currentMinute = now.getMinutes();
+
+                const endHours = Object.values(timeBucketMap).map(hours => Math.max(...hours));
+                const sortedEndHours = endHours.sort((a, b) => a - b);
+
+                for (let hour of sortedEndHours) {
+                    let target = new Date();
+                    if (hour === 0) {
+                        target.setDate(target.getDate() + 1);
+                        target.setHours(0, 0, 0, 0);
+                    } else if (hour > currentHour || (hour === currentHour && currentMinute < 59)) {
+                        target.setHours(hour + 1, 0, 5, 0);
+                    } else {
+                        continue;
+                    }
+
+                    const delay = target.getTime() - now.getTime();
+                    return delay;
+                }
+
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                tomorrow.setHours(1, 5, 0, 0);
+                return tomorrow.getTime() - now.getTime();
+            }
+
 
 
 
@@ -75,8 +101,10 @@ document.addEventListener('DOMContentLoaded', function () {
                         };
                     });
 
+                    const labelSuffix = dataPoints.every(dp => !dp.isFuture) ? ' (Actual)' : ' (Predicted)';
+
                     return {
-                        label: `${channel}`,
+                        label: `${channel} Orders${labelSuffix}`,
                         data: dataPoints.map(dp => dp.value),
                         borderColor: color,
                         backgroundColor: color,
@@ -92,9 +120,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     };
                 });
             }
-
-
-
 
             function renderChart(selectedChannel = 'all') {
                 const datasets = buildDatasets(selectedChannel);
@@ -141,6 +166,11 @@ document.addEventListener('DOMContentLoaded', function () {
             channelSelect.addEventListener('change', () => {
                 renderChart(channelSelect.value);
             });
+
+            const delay = getNextRefreshDelay();
+            setTimeout(() => {
+                location.reload();
+            }, delay);
 
             hideLoader();
         })

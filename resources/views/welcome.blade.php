@@ -17,7 +17,8 @@
         <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
         <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
         <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-
+        <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+        <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
 
         <!-- Styles / Scripts -->
         <link rel="stylesheet" href="{{ asset('css/app.css') }}">
@@ -60,6 +61,20 @@
             Real-time Monitoring
         </a>
 
+        <a href="{{ route('salesforecast') }}"
+            class="sidebar-text flex items-center gap-2 text-sm justify-start px-4 py-2 text-gray-100
+                {{ request()->routeIs('salesforecast') ? 'font-bold dark:text-yellow-300' : 'text-black dark:text-yellow-400' }}">
+             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 17l6-6 4 4 8-8" />
+                <circle cx="3" cy="17" r="1.5" />
+                <circle cx="9" cy="11" r="1.5" />
+                <circle cx="13" cy="15" r="1.5" />
+                <circle cx="21" cy="7" r="1.5" />
+            </svg>
+            Sales Forecast
+        </a>
+
         <a href="{{ route('hypercare') }}"
             class="sidebar-text flex items-center gap-2 text-sm justify-start px-4 py-2 text-gray-100
             {{ request()->routeIs('hypercare') ? 'font-bold dark:text-yellow-300' : 'text-black dark:text-yellow-400' }}">
@@ -98,6 +113,7 @@
         
     </div>
     <script src="{{ asset('js/predict.js') }}"></script>
+    <script src="{{ asset('js/realtime_sales.js') }}"></script>
     <script src="{{ asset('js/datasource.js') }}"></script>
     <script src="{{ asset('js/summary.js') }}"></script>
     <script src="{{ asset('js/last_two_weeks.js') }}"></script>
