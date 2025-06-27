@@ -164,47 +164,47 @@ class OrderController extends Controller
         });
     }
 
-    public function fetchLiveOrders(Request $request)
-    {
-        $client = new Client();
+    // public function fetchLiveOrders(Request $request)
+    // {
+    //     $client = new Client();
 
 
-        $nowSydney = Carbon::now('Australia/Sydney');
+    //     $nowSydney = Carbon::now('Australia/Sydney');
 
 
-        $from = Carbon::createFromTimestampMs($request->input('since'))
-            ->setTimezone('Australia/Sydney')
-            ->startOfSecond()
-            ->timezone('UTC')
-            ->format('Y-m-d H:i:s');
+    //     $from = Carbon::createFromTimestampMs($request->input('since'))
+    //         ->setTimezone('Australia/Sydney')
+    //         ->startOfSecond()
+    //         ->timezone('UTC')
+    //         ->format('Y-m-d H:i:s');
 
-        $to = Carbon::now('Australia/Sydney')
-            ->endOfSecond()
-            ->timezone('UTC')
-            ->format('Y-m-d H:i:s');
+    //     $to = Carbon::now('Australia/Sydney')
+    //         ->endOfSecond()
+    //         ->timezone('UTC')
+    //         ->format('Y-m-d H:i:s');
 
 
-        $response = $client->post(env('NETO_API_URL'), [
-            'headers' => [
-                'Accept' => 'application/json',
-                'NETOAPI_ACTION' => 'GetOrder',
-                'NETOAPI_KEY' => env('NETO_API_KEY')
-            ],
-            'json' => [
-                "Filter" => [
-                    "DatePlacedFrom" => [$from],
-                    "DatePlacedTo" => [$to],
-                    "SalesChannel" => ["Edisons", "Mytopia", "eBay", "BigW", "Mydeals", "Kogan", "Bunnings"],
-                    "OutputSelector" => ["OrderID", "SalesChannel", "DatePlaced"]
-                ]
-            ]
-        ]);
+    //     $response = $client->post(env('NETO_API_URL'), [
+    //         'headers' => [
+    //             'Accept' => 'application/json',
+    //             'NETOAPI_ACTION' => 'GetOrder',
+    //             'NETOAPI_KEY' => env('NETO_API_KEY')
+    //         ],
+    //         'json' => [
+    //             "Filter" => [
+    //                 "DatePlacedFrom" => [$from],
+    //                 "DatePlacedTo" => [$to],
+    //                 "SalesChannel" => ["Edisons", "Mytopia", "eBay", "BigW", "Mydeals", "Kogan", "Bunnings"],
+    //                 "OutputSelector" => ["OrderID", "SalesChannel", "DatePlaced"]
+    //             ]
+    //         ]
+    //     ]);
 
-        $orders = json_decode($response->getBody(), true)['Order'] ?? [];
+    //     $orders = json_decode($response->getBody(), true)['Order'] ?? [];
 
-        return response()->json([
-            'new_orders' => count($orders),
-            'timestamp' => now()->getTimestampMs()
-        ]);
-    }
+    //     return response()->json([
+    //         'new_orders' => count($orders),
+    //         'timestamp' => now()->getTimestampMs()
+    //     ]);
+    // }
 }

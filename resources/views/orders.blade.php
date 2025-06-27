@@ -5,10 +5,10 @@
 @section('content')
     <section class="p-6 max-w-full mx-auto">
 
-        <div class="bg-white rounded-2xl shadow-lg p-6 mb-5">
+        {{-- <div class="bg-white rounded-2xl shadow-lg p-6 mb-5">
             <h3 class="text-center text-lg font-semibold text-gray-700 mb-4">Live Order Monitor</h3>
             <div id="liveOrdersChart" class="w-full"></div>
-        </div>
+        </div> --}}
 
     
         <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
