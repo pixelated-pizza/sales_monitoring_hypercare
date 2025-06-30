@@ -161,6 +161,64 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             }
 
+            function renderPredictionTable() {
+                const tableContainer = document.createElement('div');
+                tableContainer.id = 'prediction-table-container';
+                tableContainer.classList.add('mt-6', 'overflow-x-auto');
+
+                const table = document.createElement('table');
+                table.classList.add('min-w-full', 'border-collapse', 'border', 'border-gray-300');
+
+
+                const thead = document.createElement('thead');
+                const headerRow = document.createElement('tr');
+
+                const channelHeader = document.createElement('th');
+                channelHeader.textContent = 'Sales Channel';
+                channelHeader.classList.add('border', 'p-2', 'bg-gray-100');
+
+                headerRow.appendChild(channelHeader);
+
+                allTimeBuckets.forEach(bucket => {
+                    const th = document.createElement('th');
+                    th.textContent = bucket;
+                    th.classList.add('border', 'p-2', 'bg-gray-100');
+                    headerRow.appendChild(th);
+                });
+
+                thead.appendChild(headerRow);
+                table.appendChild(thead);
+
+
+                const tbody = document.createElement('tbody');
+
+                allChannels.forEach(channel => {
+                    const row = document.createElement('tr');
+
+                    const channelCell = document.createElement('td');
+                    channelCell.textContent = channel;
+                    channelCell.classList.add('border', 'p-2', 'font-medium', 'bg-white');
+                    row.appendChild(channelCell);
+
+                    allTimeBuckets.forEach(bucket => {
+                        const cell = document.createElement('td');
+                        cell.textContent = data[channel][bucket] ?? 0;
+                        cell.classList.add('border', 'p-2', 'bg-white', 'text-center');
+                        row.appendChild(cell);
+                    });
+
+                    tbody.appendChild(row);
+                });
+
+                table.appendChild(tbody);
+                tableContainer.appendChild(table);
+
+
+                const chartContainer = document.getElementById('predictionChart').parentNode;
+                chartContainer.appendChild(tableContainer);
+            }
+            renderPredictionTable();
+
 
             renderChart();
             channelSelect.addEventListener('change', () => {
@@ -178,4 +236,6 @@ document.addEventListener('DOMContentLoaded', function () {
             console.error('Error fetching prediction data:', error);
             loader.innerHTML = '<p class="text-red-600">Failed to load graph.</p>';
         });
+
+
 });
