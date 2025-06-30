@@ -55,23 +55,31 @@ function renderSummary() {
             const isPM = timeStr.toUpperCase().includes('PM');
             const isAM = timeStr.toUpperCase().includes('AM');
 
-            if (timeStr.trim().toUpperCase() === '12AM') return 24;
-            if (timeStr.trim().toUpperCase() === '12PM') return 12;
+            if (timeStr.trim().toUpperCase() === '12AM') return 0; 
+            if (timeStr.trim().toUpperCase() === '12PM') return 12; 
 
-            return isPM ? hour + 12 : hour;
+            return isPM ? (hour === 12 ? 12 : hour + 12) : hour; 
         };
-
 
         const isFutureRange = (range) => {
             const currentHour = new Date().getHours();
-            let endHour = parseHour(range.split(' - ')[1].trim());
-            if (endHour === 24) {
-                return !(currentHour >= 22 && currentHour < 24);
-            }
-
-            return currentHour < endHour;
+            const startHour = parseHour(range.split(' - ')[0].trim());
+            return currentHour < startHour;
         };
 
+        const isCurrentRange = (range) => {
+            const now = new Date();
+            const currentHour = now.getHours();
+
+            const [start, end] = range.split(' - ').map(t => t.trim());
+            const startHour = parseHour(start);
+            const endHour = parseHour(end);
+
+            if (endHour < startHour) {
+                return currentHour >= startHour || currentHour < endHour;
+            }
+            return currentHour >= startHour && currentHour < endHour;
+        };
 
         const allTimeRangesCompleted = () => timeRanges.every(range => !isFutureRange(range));
 
@@ -92,7 +100,7 @@ function renderSummary() {
                 const future = isFutureRange(range);
                 const today = todayData[channel]?.[range] || 0;
                 const prev = prevData[channel]?.[range] || 0;
-                row += `<td class="border px-2 py-1 text-left text-blue-500 font-semibold ${future ? 'text-gray-400' : 'glow-pulse'}">${future ? '' : today}</td>`;
+                row += `<td class="border px-2 py-1 text-left text-blue-500 font-semibold ${future ? 'text-gray-400' : isCurrentRange(range) ? 'glow-pulse' : ''}">${future ? '' : today}</td>`;
                 row += `<td class="border px-2 py-1 text-left text-gray-400"></td>`;
                 comboToday[range] = (comboToday[range] || 0) + today;
                 comboPrev[range] = (comboPrev[range] || 0) + prev;
@@ -109,7 +117,7 @@ function renderSummary() {
             const diff = getPercentDiff(today, prev);
             const colorClass = today < prev * 0.5 ? 'text-red-700 font-extrabold' : 'text-green-500 font-bold';
 
-            html += `<td class="border px-2 py-1 text-left text-blue-500 font-semibold ${future ? 'text-gray-400' : 'glow-pulse'}">${future ? '' : today}</td>`;
+            html += `<td class="border px-2 py-1 text-left text-blue-500 font-semibold ${future ? 'text-gray-400' : isCurrentRange(range) ? 'glow-pulse' : ''}">${future ? '' : today}</td>`;
             html += `<td class="border px-2 py-1 text-left ${future ? 'text-gray-400' : colorClass} ${future ? '' : ''}">${future ? '' : diff}</td>`;
         });
         html += `</tr>`;
@@ -153,7 +161,7 @@ function renderSummary() {
                 const diff = getPercentDiff(today, prev);
                 const colorClass = today < prev * 0.5 ? 'text-red-700 font-extrabold': 'text-green-500 font-bold';
 
-                row += `<td class="border px-2 py-1 text-left text-blue-500 font-semibold ${future ? 'text-gray-400' : 'glow-pulse'}">${future ? '' : today}</td>`;
+                row += `<td class="border px-2 py-1 text-left text-blue-500 font-semibold ${future ? 'text-gray-400' : isCurrentRange(range) ? 'glow-pulse' : ''}">${future ? '' : today}</td>`;
                 row += `<td class="border px-2 py-1 text-left ${future ? 'text-gray-400' : colorClass} ${future ? '' : ''}">${future ? '' : diff}</td>`;
 
             });

@@ -21,7 +21,7 @@
 
                 <div id="load-prediction" style="display:none; text-align:center; margin:10px 0;">
                     <div class="spinner" style="display:inline-block; vertical-align:middle; margin-right: 8px;"></div>
-                    <span style="vertical-align:middle;">Loading graph...</span>
+                    <span style="vertical-align:middle;">Forecasting sales...</span>
                 </div>
                 <canvas id="predictionChart" height="100"></canvas>
             </div>
