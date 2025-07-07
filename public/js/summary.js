@@ -1,8 +1,10 @@
 let hasLoaded = false;
+let previousOrders = {};  
+let notifications = [];   
 function renderSummary() {
     const loadingElem = document.getElementById('loading');
     const container = document.getElementById('summary-report');
-
+ 
     if (!hasLoaded) {
         loadingElem.style.display = 'block';
         container.innerHTML = '';
@@ -12,6 +14,7 @@ function renderSummary() {
         axios.get('/api/today-sales'),
         axios.get('/api/prev-sales')
     ]).then(([todayRes, prevRes]) => {
+        notifications = [];
         loadingElem.style.display = 'none';
         hasLoaded = true;
         const todayData = todayRes.data;

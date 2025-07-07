@@ -10,7 +10,6 @@
             <div id="liveOrdersChart" class="w-full"></div>
         </div> --}}
 
-    
         <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
             <div class="flex items-center justify-center mb-5">
                 <span class="realtime-dot mr-2"></span>
@@ -25,7 +24,7 @@
             <div id="summary-report" class="overflow-auto"></div>
 
         </div>
-        
+
 
     </section>
 @endsection

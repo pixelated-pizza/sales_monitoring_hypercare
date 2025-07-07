@@ -101,9 +101,14 @@
     </nav>
     </div>
 
-    <div id="weather-forecast" class="sidebar-text mt-6 text-sm text-center p-3 text-gray-800 dark:text-gray-100 rounded-md shadow-inner">
+    {{-- <div id="weather-forecast" class="sidebar-text mt-6 text-sm text-center p-3 text-gray-800 dark:text-gray-100 rounded-md shadow-inner">
         <span>Loading weather...</span>
-    </div>
+    </div> --}}
+
+     <footer class="mt-6 pt-4 border-t border-gray-700 text-center text-xs text-gray-400">
+        <p class="text-sm font-semibold text-gray-300">Created by ESS</p>
+        <p>&copy; 2025</p>
+    </footer>
 </aside>
 
         

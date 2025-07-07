@@ -184,6 +184,7 @@
      overflow: hidden;
  }
 
+
  @keyframes glowPulse {
     0%, 100% {
         opacity: 1;
