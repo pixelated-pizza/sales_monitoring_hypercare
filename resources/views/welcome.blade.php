@@ -30,7 +30,7 @@
             </style>
         @endif
     </head>
-    <body class="h-full bg-gradient-to-r from-blue-400 via-blue-600 to-blue-900 text-gray-900 transition-colors">
+    <body class="h-full bg-gray-700 text-gray-900 transition-colors">
        
          <div class="flex h-screen">
             
@@ -105,8 +105,8 @@
         <span>Loading weather...</span>
     </div> --}}
 
-     <footer class="mt-6 pt-4 border-t border-gray-700 text-center text-xs text-gray-400">
-        <p class="text-sm font-semibold text-gray-300">Created by ESS</p>
+     <footer class="mt-6 pt-4 border-t border-gray-700 text-center text-xs text-gray-400 sidebar-footer">
+        <p class="text-lg font-semibold text-gray-300">Created by E⚡︎⚡︎</p>
         <p>&copy; 2025</p>
     </footer>
 </aside>

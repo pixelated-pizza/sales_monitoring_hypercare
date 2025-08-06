@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\DataSourceController;
+use App\Http\Controllers\APIController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PastDataController;
@@ -30,7 +30,7 @@ Route::get('/api/two-weeks', [PastDataController::class, 'groupOrdersByTimeBucke
 Route::get('/api/yesterday-sales', [PastDataController::class, 'fetchYesterdaySales']);
 Route::get('/api/last-week', [PastDataController::class, 'fetchSameWeekdayLastWeekSales']);
 
-Route::get('/api/data-source', [DataSourceController::class, 'getRawOrders']);
-Route::get('/api/predict-sales', [OrderController::class, 'predict_sales']);
+Route::get('/api/data-source', [APIController::class, 'data_source']);
+Route::get('/api/predict-sales', [APIController::class, 'forecast']);
 
 // Route::get('/api/live-orders', [OrderController::class, 'fetchLiveOrders']);

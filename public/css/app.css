@@ -84,6 +84,10 @@
      justify-content: center;
  }
 
+ .sidebar-collapsed .sidebar-footer {
+    display: none;
+ }
+
  .toggle-thumb {
      transform: translateX(0);
  }
