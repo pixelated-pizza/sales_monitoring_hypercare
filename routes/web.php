@@ -1,0 +1,36 @@
+<?php
+
+use App\Http\Controllers\APIController;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PastDataController;
+
+Route::get('/', function () {
+    return view('orders');  
+})->name('sales');
+
+Route::get('/hypercare', function () {
+    return view('hypercare');  
+})->name('hypercare');
+
+Route::get('/datasource', function () {
+    return view('datasource');  
+})->name('datasource');
+
+Route::get('/salesforecast', function () {
+    return view('salesforecast');  
+})->name('salesforecast');
+
+Route::get('/api/prev-sales', [OrderController::class, 'fetchSameWeekdayLastWeekSales']);
+
+Route::get('/api/today-sales', [OrderController::class, 'fetchTodaySales']);
+
+Route::get('/api/two-weeks', [PastDataController::class, 'groupOrdersByTimeBucket']);
+
+Route::get('/api/yesterday-sales', [PastDataController::class, 'fetchYesterdaySales']);
+Route::get('/api/last-week', [PastDataController::class, 'fetchSameWeekdayLastWeekSales']);
+
+Route::get('/api/data-source', [APIController::class, 'data_source']);
+Route::get('/api/predict-sales', [APIController::class, 'forecast']);
+
+// Route::get('/api/live-orders', [OrderController::class, 'fetchLiveOrders']);
