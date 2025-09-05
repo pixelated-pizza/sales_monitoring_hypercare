@@ -200,6 +200,45 @@ function renderTablePage() {
 
 }
 
+function exportToCSV() {
+    if (!allData || allData.length === 0) {
+        alert("No data to export.");
+        return;
+    }
+
+    // Define CSV headers
+    const headers = ["Order ID", "Status", "Channel", "Date", "SKU", "Qty"];
+
+    // Convert data rows
+    const rows = allData.map(item => [
+        item.OrderID,
+        item.OrderStatus,
+        item.SalesChannel,
+        item.DatePlaced,
+        item.OrderLineSKU,
+        item.OrderLineQty || "-"
+    ]);
+
+    // Build CSV string (plain, no UTF-8 BOM)
+    let csvContent = headers.join(",") + "\n"
+        + rows.map(row => row.map(value => `"${String(value).replace(/"/g, '""')}"`).join(",")).join("\n");
+
+    // Create Blob
+    const blob = new Blob([csvContent], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+
+    // Create download link
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `orders_${filterDate || "all"}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // Cleanup
+    URL.revokeObjectURL(url);
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     renderDataSource();
 
@@ -211,4 +250,7 @@ document.addEventListener('DOMContentLoaded', function () {
         filterDate = this.value;
         renderDataSource(filterDate);
     });
+
+    document.getElementById('exportCsvBtn').addEventListener('click', exportToCSV);
+
 });

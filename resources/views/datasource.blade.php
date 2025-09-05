@@ -54,6 +54,10 @@
                         <option value="Backorder Approved">Backorder Approved</option>
                     </select>
                 </label>
+
+                <button id="exportCsvBtn" class="px-3 py-1 bg-green-500 text-white rounded">
+                    Export CSV
+                </button>
             </div>
 
             <div id="load-data" class="hidden text-center my-4">
