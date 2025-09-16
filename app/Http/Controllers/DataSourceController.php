@@ -36,7 +36,8 @@ class DataSourceController extends Controller
                     'headers' => [
                         'Accept' => 'application/json',
                         'NETOAPI_ACTION' => 'GetOrder',
-                        'NETOAPI_KEY' => env('NETO_API_KEY')
+                        'NETOAPI_KEY' => env('NETO_API_KEY'),
+                        'NETOAPI_USERNAME' => env('NETO_API_USERNAME'),
                     ],
                     'json' => [
                         "Filter" => [

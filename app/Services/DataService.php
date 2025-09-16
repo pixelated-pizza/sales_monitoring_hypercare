@@ -52,7 +52,8 @@ class DataService
                 'headers' => [
                     'Accept' => 'application/json',
                     'NETOAPI_ACTION' => 'GetOrder',
-                    'NETOAPI_KEY' => env('NETO_API_KEY')
+                    'NETOAPI_KEY' => env('NETO_API_KEY'),
+                    'NETOAPI_USERNAME' => env('NETO_API_USERNAME'),
                 ],
                 'json' => [
                     "Filter" => [
@@ -135,6 +136,7 @@ class DataService
                     'headers' => [
                         'Accept' => 'application/json',
                         'NETOAPI_ACTION' => 'GetOrder',
+                        'NETOAPI_USERNAME' => env('NETO_API_USERNAME'),
                         'NETOAPI_KEY' => env('NETO_API_KEY')
                     ],
                     'json' => [

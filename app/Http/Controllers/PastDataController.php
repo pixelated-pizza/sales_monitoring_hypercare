@@ -43,6 +43,7 @@ class PastDataController extends Controller
                 'headers' => [
                     'Accept' => 'application/json',
                     'NETOAPI_ACTION' => 'GetOrder',
+                    'NETOAPI_USERNAME' => env('NETO_API_USERNAME'),
                     'NETOAPI_KEY' => env('NETO_API_KEY')
                 ],
                 'json' => [
