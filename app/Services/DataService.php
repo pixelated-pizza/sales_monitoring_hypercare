@@ -59,7 +59,7 @@ class DataService
                     "Filter" => [
                         "DatePlacedFrom" => [$dateFrom],
                         "DatePlacedTo" => [$dateTo],
-                        "SalesChannel" => ["Edisons", "Mytopia", "eBay", "BigW", "Mydeals", "Kogan", "Bunnings"],
+                        "SalesChannel" => ["Edisons", "Mytopia", "eBay", "BigW", "Mydeals", "Kogan", "Bunnings", "Amazon DF"],
                         "OutputSelector" => ["OrderID", "SalesChannel", "DatePlaced"]
                     ]
                 ]

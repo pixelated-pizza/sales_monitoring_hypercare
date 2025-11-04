@@ -48,7 +48,7 @@ function renderPast(selectedDate = null) {
             '10PM - 12AM',
         ];
 
-        const preferredOrder = ["Edisons", "Mytopia", "eBay", "BigW", "Mydeals", "Kogan", "Bunnings"];
+        const preferredOrder = ["Edisons", "Mytopia", "eBay", "BigW", "Mydeals", "Kogan", "Bunnings", "Amazon DF"];
 
         const now = new Date();
         const targetDate = selectedDate ? new Date(selectedDate) : new Date(now.setDate(now.getDate() - 1));

@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
                 html += `</tr></thead><tbody>`;
 
-                const preferredOrder = ["Edisons", "Mytopia", "eBay", "BigW", "Mydeals", "Kogan", "Bunnings"];
+                const preferredOrder = ["Edisons", "Mytopia", "eBay", "BigW", "Mydeals", "Kogan", "Bunnings", "Amazon DF"];
 
                 preferredOrder.forEach(channel => {
                     html += `<tr class="even:bg-gray-50">`;

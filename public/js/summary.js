@@ -29,7 +29,7 @@ function renderSummary() {
             '10PM - 12AM'
         ];
 
-        const preferredOrder = ["Edisons", "Mytopia", "eBay", "BigW", "Mydeals", "Kogan", "Bunnings"];
+        const preferredOrder = ["Edisons", "Mytopia", "eBay", "BigW", "Mydeals", "Kogan", "Bunnings", "Amazon DF"];
         const now = new Date();
         const lastWeekOfToday = new Date(now);
         lastWeekOfToday.setDate(lastWeekOfToday.getDate() - 7);
